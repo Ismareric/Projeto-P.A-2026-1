@@ -13,7 +13,7 @@ def iniciar_figura_nova(event):
         fig_nova = ("retângulo", (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
     elif formato.get() == 'oval':
         fig_nova = ('oval', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
-    else: #circulo
+    else: 
         fig_nova = ('circulo', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
 
 # Quando mouse é movido com o botão pressionado
@@ -27,9 +27,8 @@ def atualizar_figura_nova(event):
         fig_nova = ("retângulo", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
     elif fig_nova[0] == 'oval':
         fig_nova = ('oval', (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-    elif fig_nova[0] == 'circulo':
-        raio = ((fig_nova[1][2] - fig_nova[1][0])**2 + (fig_nova[1][3] - fig_nova[1][1])**2)**0.5
-        fig_nova = ('circulo', (fig_nova[1][0] - raio, fig_nova[1][1] - raio,fig_nova[1][0] + raio, fig_nova[1][1] + raio), fig_nova[2], fig_nova[3])
+    else:
+        fig_nova = ('circulo', (fig_nova[1][0], fig_nova[1][1], event.x, event.y), fig_nova[2], fig_nova[3])
         
     desenhar_figuras()
     desenhar_figura_nova()
@@ -51,6 +50,9 @@ def desenhar_figuras():
             desenho.create_rectangle(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
         elif fig == 'oval':
             desenho.create_oval(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
+        else : #circulo
+            raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
+            desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio,outline=cor1,fill=cor2)
 def desenhar_figura_nova():
     fig, values,cor1,cor2 = fig_nova
     if fig == "linha":
@@ -62,7 +64,8 @@ def desenhar_figura_nova():
     elif fig == 'oval':
         desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
     else : #circulo
-        desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
+        raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
+        desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio, dash=(4, 2),outline=cor1,fill=cor2)
 
 def incompleta(figura):
     fig, values,cor1,cor2 = figura
@@ -90,7 +93,7 @@ def mudarcordedentro():
 espacaomento={'padx':2,'pady':2}
 
 
-#lista serve pra guardar as figs desenhadas, o fig_nova guarda as características dessa nova figura  sendo desenhada(incluidndo tipo e coordenadas)
+#lista serve pra guardar as figs desenhadas, o feig_nova guarda as características dessa nova figura  sendo desenhada(incluidndo tipo e coordenadas)
 figs=[]
 fig_nova=None
 
