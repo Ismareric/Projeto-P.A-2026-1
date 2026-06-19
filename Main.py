@@ -1,73 +1,93 @@
 from tkinter import *
 from tkinter import ttk
+import tkinter.colorchooser
 #h111111
 #Código de Giovanny
 def iniciar_figura_nova(event): 
-    global figura_nova
+    global fig_nova
     if formato.get() == 'linha':
-        figura_nova = ("linha", (event.x, event.y, event.x, event.y))
+        fig_nova = ("linha", (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
     elif formato.get() == 'rabisco':
-        figura_nova = ("rabisco", [(event.x, event.y)])
+        fig_nova = ("rabisco", [(event.x, event.y)],cordeoutline[1],cordeprenchimento[1])
     elif formato.get() == 'retângulo':
-        figura_nova = ("retângulo", (event.x, event.y, event.x, event.y))
+        fig_nova = ("retângulo", (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
     elif formato.get() == 'oval':
-        figura_nova = ('oval', (event.x, event.y, event.x, event.y))
+        fig_nova = ('oval', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
+    else: #circulo
+        fig_nova = ('circulo', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
 
 # Quando mouse é movido com o botão pressionado
 def atualizar_figura_nova(event):
-    global figura_nova
-    if figura_nova[0] == "rabisco":
-        figura_nova[1].append((event.x, event.y))
-    elif figura_nova[0] == "linha":
-        figura_nova = ("linha", (figura_nova[1][0], figura_nova[1][1], event.x, event.y))
-    elif figura_nova[0] == "retângulo":
-        figura_nova = ("retângulo", (figura_nova[1][0], figura_nova[1][1], event.x, event.y))
-    elif figura_nova[0] == 'oval':
-        figura_nova = ('oval', (figura_nova[1][0], figura_nova[1][1], event.x, event.y))
+    global fig_nova
+    if fig_nova[0] == "rabisco":
+        fig_nova[1].append((event.x, event.y))
+    elif fig_nova[0] == "linha":
+        fig_nova = ("linha", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
+    elif fig_nova[0] == "retângulo":
+        fig_nova = ("retângulo", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
+    elif fig_nova[0] == 'oval':
+        fig_nova = ('oval', (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
+    elif fig_nova[0] == 'circulo':
+        raio = ((fig_nova[1][2] - fig_nova[1][0])**2 + (fig_nova[1][3] - fig_nova[1][1])**2)**0.5
+        fig_nova = ('circulo', (fig_nova[1][0] - raio, fig_nova[1][1] - raio,fig_nova[1][0] + raio, fig_nova[1][1] + raio), fig_nova[2], fig_nova[3])
+        
     desenhar_figuras()
     desenhar_figura_nova()
 
 # Quando mouse é solto
 def incluir_figura_nova(event): 
-    if not incompleta(figura_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
-        figs.append(figura_nova) 
+    if not incompleta(fig_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
+        figs.append(fig_nova) 
     desenhar_figuras()
-
+##cor 1 é o outline, cor 2 é o preenchimento
 def desenhar_figuras():
     desenho.delete("all")
-    for fig, values in figs:
+    for fig, values,cor1,cor2 in figs:
         if fig == "linha":
-            desenho.create_line(values[0], values[1], values[2], values[3])
+            desenho.create_line(values[0], values[1], values[2], values[3],fill=cor1)
         elif fig == "rabisco":
-            desenho.create_line(values)
+            desenho.create_line(values,fill=cor1)
         elif fig == "retângulo":
-            desenho.create_rectangle(values[0], values[1], values[2], values[3])
+            desenho.create_rectangle(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
         elif fig == 'oval':
-            desenho.create_oval(values[0], values[1], values[2], values[3])
+            desenho.create_oval(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
 def desenhar_figura_nova():
-    fig, values = figura_nova
+    fig, values,cor1,cor2 = fig_nova
     if fig == "linha":
-        desenho.create_line(values[0], values[1], values[2], values[3], dash=(4, 2))
+        desenho.create_line(values[0], values[1], values[2], values[3], dash=(4, 2),fill=cor1)
     elif fig == "rabisco":
-        desenho.create_line(values, dash=(4, 2))
+        desenho.create_line(values, dash=(4, 2),fill=cor1)
     elif fig == "retângulo":
-        desenho.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2))
+        desenho.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
     elif fig == 'oval':
-        desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2))
+        desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
+    else : #circulo
+        desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
 
 def incompleta(figura):
-    fig, values = figura
-    if fig == "linha" or fig == "retângulo":
+    fig, values,cor1,cor2 = figura
+    if fig == "linha" or fig == "retângulo" or fig == 'circulo':
         return (values[0], values[1]) == (values[2], values[3])
     elif fig == "rabisco":
         return len(values) <= 1
-
-
-
-
+#a funcaomudarcordeoutline e a outra checkam pra ver se o usuario nao cancelou/ fechou a janela e muda a cor pra cor do metodo
+def mudarcordeoutline():
+    global cordeoutline
+    corbruta=tkinter.colorchooser.askcolor()
+    if corbruta==(None,None):
+        cordeoutline=(None,'')
+    else:
+        cordeoutline=corbruta
+def mudarcordedentro():
+    global cordeprenchimento
+    corbruta=tkinter.colorchooser.askcolor()
+    if corbruta==(None,None):
+        cordeprenchimento=(None,'')
+    else:
+        cordeprenchimento=corbruta
 
 #teoricamente você poderia digitar toda vez que colocasse um widget no frmae mas me poupe
-espacaomento={'padx':5,'pady':5}
+espacaomento={'padx':2,'pady':2}
 
 
 #lista serve pra guardar as figs desenhadas, o fig_nova guarda as características dessa nova figura  sendo desenhada(incluidndo tipo e coordenadas)
@@ -87,9 +107,17 @@ texto1.grid(column=0,row=0,**espacaomento,sticky=W)
 #obs1 eu nao sabia oque esse string var era até olhar a documentação
 #obs2 eu nao sei se precisa ser exatamente atribuido à janela ou poderia ser o frame tbm
 formato=StringVar(janela)
-menu=ttk.OptionMenu(janelapropria,formato,'linha','linha','rabisco','retângulo','oval','círculos')
+menu=ttk.OptionMenu(janelapropria,formato,'linha',*['linha','rabisco','retângulo','oval','círculos'])
 menu.grid(column=1,row=0,sticky=W,**espacaomento)
 
+cordeoutline=(None,'#000000')
+cordeprenchimento=(None,'')
+
+alterarcoresdeoutline=Button(janelapropria,text='Alterar Cor da Borda',command=mudarcordeoutline)
+alterarcoresdprenchimento=Button(janelapropria,text='Alterar Cor de preenchimento',command=mudarcordedentro)
+
+alterarcoresdeoutline.grid(column=3,row=0,sticky=W,**espacaomento)
+alterarcoresdprenchimento.grid(column=4,row=0,sticky=W,**espacaomento)
 
 #criar o canvas
 desenho=Canvas(janelapropria,width=1280,height=720,bg='white')
@@ -101,5 +129,6 @@ desenho.bind('<ButtonPress-1>', iniciar_figura_nova)
 desenho.bind('<B1-Motion>', atualizar_figura_nova)
 desenho.bind('<ButtonRelease-1>', incluir_figura_nova)
 
+##loop do mau
 
 janela.mainloop()
