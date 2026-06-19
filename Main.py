@@ -1,2 +1,6 @@
 from tkinter import *
-##desconsdiere os primeiros 3 commitis, eu tava testando o git
+from tkinter import ttk
+janela=Tk()
+frame=Frame(janela)
+frame.pack()
+janela.mainloop()
