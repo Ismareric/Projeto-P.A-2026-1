@@ -17,6 +17,7 @@ def iniciar_figura_nova(event):
         fig_nova = ('circulo', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
 
 # Quando mouse é movido com o botão pressionado
+##fig_nova[2] e [3 ] sao as cores, já que elas já se incluem em iniciarfiguranova, achei melhor só usar o valor do proprio fig nova
 def atualizar_figura_nova(event):
     global fig_nova
     if fig_nova[0] == "rabisco":
@@ -102,7 +103,7 @@ janela=Tk()
 janelapropria=Frame(janela,width=1280,height=720)
 
 #criação dos textos na tela(obs: preciso adicionar mais)
-texto1=Label(janelapropria,text='desenhos')
+texto1=Label(janelapropria,text='desenhos e diversões',font='Arial')
 texto1.grid(column=0,row=0,**espacaomento,sticky=W)
 
 
@@ -119,12 +120,12 @@ cordeprenchimento=(None,'')
 alterarcoresdeoutline=Button(janelapropria,text='Alterar Cor da Borda',command=mudarcordeoutline)
 alterarcoresdprenchimento=Button(janelapropria,text='Alterar Cor de preenchimento',command=mudarcordedentro)
 
-alterarcoresdeoutline.grid(column=3,row=0,sticky=W,**espacaomento)
-alterarcoresdprenchimento.grid(column=4,row=0,sticky=W,**espacaomento)
+alterarcoresdeoutline.grid(column=2,row=0,sticky=W,**espacaomento)
+alterarcoresdprenchimento.grid(column=3,row=0,sticky=W,**espacaomento)
 
 #criar o canvas
 desenho=Canvas(janelapropria,width=1280,height=720,bg='white')
-desenho.grid(column=0,row=1,columnspan=2,**espacaomento)
+desenho.grid(column=0,row=1,columnspan=4,**espacaomento)
 
 janelapropria.pack()
 
