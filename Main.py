@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-#hkfgj
+#h111111
 #Código de Giovanny
 def iniciar_figura_nova(event): 
     global figura_nova
