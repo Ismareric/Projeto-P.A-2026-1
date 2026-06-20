@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.colorchooser
-#h111111
-#Código de Giovanny
+
+#Identifica qual figura será desenhada
 def iniciar_figura_nova(event): 
     global fig_nova
     if formato.get() == 'linha':
@@ -13,7 +13,7 @@ def iniciar_figura_nova(event):
         fig_nova = ("retângulo", (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
     elif formato.get() == 'oval':
         fig_nova = ('oval', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
-    else: 
+    else : #circulo 
         fig_nova = ('circulo', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
 
 # Quando mouse é movido com o botão pressionado
@@ -79,14 +79,14 @@ def mudarcordeoutline():
     global cordeoutline
     corbruta=tkinter.colorchooser.askcolor()
     if corbruta==(None,None):
-        cordeoutline=(None,'')
+        cordeoutline=cordeoutline
     else:
         cordeoutline=corbruta
 def mudarcordedentro():
     global cordeprenchimento
     corbruta=tkinter.colorchooser.askcolor()
     if corbruta==(None,None):
-        cordeprenchimento=(None,'')
+        cordeprenchimento=cordeprenchimento
     else:
         cordeprenchimento=corbruta
 
