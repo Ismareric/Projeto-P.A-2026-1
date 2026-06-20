@@ -78,17 +78,20 @@ def incompleta(figura):
 def mudarcordeoutline():
     global cordeoutline
     corbruta=tkinter.colorchooser.askcolor()
-    if corbruta==(None,None):
-        cordeoutline=cordeoutline
-    else:
+    if corbruta!=(None,None):
         cordeoutline=corbruta
-def mudarcordedentro():
+    
+def mudarcordedentro(transparente=False):
     global cordeprenchimento
-    corbruta=tkinter.colorchooser.askcolor()
-    if corbruta==(None,None):
-        cordeprenchimento=cordeprenchimento
-    else:
-        cordeprenchimento=corbruta
+    if transparente :
+        cordeprenchimento = (None, '')
+
+    else :
+        corbruta=tkinter.colorchooser.askcolor()
+    
+        if corbruta!=(None,None):
+            cordeprenchimento=corbruta
+  
 
 #teoricamente você poderia digitar toda vez que colocasse um widget no frmae mas me poupe
 espacaomento={'padx':2,'pady':2}
@@ -119,13 +122,15 @@ cordeprenchimento=(None,'')
 
 alterarcoresdeoutline=Button(janelapropria,text='Alterar Cor da Borda',command=mudarcordeoutline)
 alterarcoresdprenchimento=Button(janelapropria,text='Alterar Cor de preenchimento',command=mudarcordedentro)
+semprenchimento = Button(janelapropria, text="Tirar Preenchimento", command=lambda :mudarcordedentro(transparente=True))
 
 alterarcoresdeoutline.grid(column=2,row=0,sticky=W,**espacaomento)
 alterarcoresdprenchimento.grid(column=3,row=0,sticky=W,**espacaomento)
+semprenchimento.grid(column=4, row=0, sticky=W, **espacaomento)
 
 #criar o canvas
 desenho=Canvas(janelapropria,width=1280,height=720,bg='white')
-desenho.grid(column=0,row=1,columnspan=4,**espacaomento)
+desenho.grid(column=0,row=1,columnspan=5,**espacaomento)
 
 janelapropria.pack()
 
