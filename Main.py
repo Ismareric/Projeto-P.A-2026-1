@@ -70,7 +70,7 @@ def desenhar_figura_nova():
 
 def incompleta(figura):
     fig, values,cor1,cor2 = figura
-    if fig == "linha" or fig == "retângulo" or fig == 'circulo':
+    if fig == "linha" or fig == "retângulo" or fig == 'circulo' or fig == 'oval':
         return (values[0], values[1]) == (values[2], values[3])
     elif fig == "rabisco":
         return len(values) <= 1
@@ -97,7 +97,7 @@ def mudarcordedentro(transparente=False):
 espacaomento={'padx':2,'pady':2}
 
 
-#lista serve pra guardar as figs desenhadas, o feig_nova guarda as características dessa nova figura  sendo desenhada(incluidndo tipo e coordenadas)
+#lista serve pra guardar as figs desenhadas, o fig_nova guarda as características dessa nova figura  sendo desenhada(incluidndo tipo e coordenadas)
 figs=[]
 fig_nova=None
 
@@ -117,9 +117,11 @@ formato=StringVar(janela)
 menu=ttk.OptionMenu(janelapropria,formato,'linha',*['linha','rabisco','retângulo','oval','círculos'])
 menu.grid(column=1,row=0,sticky=W,**espacaomento)
 
+#cores padrão
 cordeoutline=(None,'#000000')
 cordeprenchimento=(None,'')
 
+#botões
 alterarcoresdeoutline=Button(janelapropria,text='Alterar Cor da Borda',command=mudarcordeoutline)
 alterarcoresdprenchimento=Button(janelapropria,text='Alterar Cor de preenchimento',command=mudarcordedentro)
 semprenchimento = Button(janelapropria, text="Tirar Preenchimento", command=lambda :mudarcordedentro(transparente=True))
@@ -138,6 +140,5 @@ desenho.bind('<ButtonPress-1>', iniciar_figura_nova)
 desenho.bind('<B1-Motion>', atualizar_figura_nova)
 desenho.bind('<ButtonRelease-1>', incluir_figura_nova)
 
-##loop do mau
 
 janela.mainloop()
