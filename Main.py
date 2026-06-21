@@ -2,6 +2,39 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.colorchooser
 
+##aqui a parte nova !
+class figuras:
+    def __init__(self):
+        self.figuras=[]
+    ##polemica do desenhar_figuras! perdeu tudo e ta morando de aluguel como método da classe figuras
+    ##cor 1 é o outline, cor 2 é o preenchimento (SUJEITO A MUDANÇA)
+    def desenhar_figuras(self):
+        desenho.delete("all")
+        for fig, values,cor1,cor2 in self.figuras:
+            if fig == "linha":
+                desenho.create_line(values[0], values[1], values[2], values[3],fill=cor1)
+            elif fig == "rabisco":
+                desenho.create_line(values,fill=cor1)
+            elif fig == "retângulo":
+                desenho.create_rectangle(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
+            elif fig == 'oval':
+                desenho.create_oval(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
+            else : #circulo
+                raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
+                desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio,outline=cor1,fill=cor2)
+    def desenhar_figura_nova(self):
+        fig, values,cor1,cor2 = fig_nova
+        if fig == "linha":
+            desenho.create_line(values[0], values[1], values[2], values[3], dash=(4, 2),fill=cor1)
+        elif fig == "rabisco":
+            desenho.create_line(values, dash=(4, 2),fill=cor1)
+        elif fig == "retângulo":
+            desenho.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
+        elif fig == 'oval':
+            desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
+        else : #circulo
+            raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
+            desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio, dash=(4, 2),outline=cor1,fill=cor2)
 #Identifica qual figura será desenhada
 def iniciar_figura_nova(event): 
     global fig_nova
@@ -31,42 +64,16 @@ def atualizar_figura_nova(event):
     else:
         fig_nova = ('circulo', (fig_nova[1][0], fig_nova[1][1], event.x, event.y), fig_nova[2], fig_nova[3])
         
-    desenhar_figuras()
-    desenhar_figura_nova()
+    figs.desenhar_figuras()
+    figs.desenhar_figura_nova()
 
 # Quando mouse é solto
 def incluir_figura_nova(event): 
     if not incompleta(fig_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
-        figs.append(fig_nova) 
-    desenhar_figuras()
-##cor 1 é o outline, cor 2 é o preenchimento
-def desenhar_figuras():
-    desenho.delete("all")
-    for fig, values,cor1,cor2 in figs:
-        if fig == "linha":
-            desenho.create_line(values[0], values[1], values[2], values[3],fill=cor1)
-        elif fig == "rabisco":
-            desenho.create_line(values,fill=cor1)
-        elif fig == "retângulo":
-            desenho.create_rectangle(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
-        elif fig == 'oval':
-            desenho.create_oval(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
-        else : #circulo
-            raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
-            desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio,outline=cor1,fill=cor2)
-def desenhar_figura_nova():
-    fig, values,cor1,cor2 = fig_nova
-    if fig == "linha":
-        desenho.create_line(values[0], values[1], values[2], values[3], dash=(4, 2),fill=cor1)
-    elif fig == "rabisco":
-        desenho.create_line(values, dash=(4, 2),fill=cor1)
-    elif fig == "retângulo":
-        desenho.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
-    elif fig == 'oval':
-        desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
-    else : #circulo
-        raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
-        desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio, dash=(4, 2),outline=cor1,fill=cor2)
+        figs.figuras.append(fig_nova) 
+    figs.desenhar_figuras()
+
+
 
 def incompleta(figura):
     fig, values,cor1,cor2 = figura
@@ -98,7 +105,7 @@ espacaomento={'padx':2,'pady':2}
 
 
 #lista serve pra guardar as figs desenhadas, o fig_nova guarda as características dessa nova figura  sendo desenhada(incluidndo tipo e coordenadas)
-figs=[]
+figs=figuras()
 fig_nova=None
 
 #criação da tela
