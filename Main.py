@@ -49,6 +49,50 @@ class rabisco(figurA):
         desenho.create_line(self.coord,fill=self.cor[1])
     def desenharincompleto(self):
         desenho.create_line(self.coord,fill=self.cor[1],dash=(4,2))
+class circulos(figurA):
+    def __init__(self,event,cordeoutline,cordeprenchimento):
+        self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
+        self.cordefora=cordeoutline
+        self.cordedentro=cordeprenchimento
+    def atualizar_figura_nova(self,event):
+            self.coord[2]=event.x
+            self.coord[3]=event.y
+            figs.desenhar_figuras()
+            self.desenharincompleto()
+    def desenhar(self):
+      raio = ((self.coord[2] - self.coord[0])**2 + (self.coord[3]- self.coord[1])**2)**0.5
+      desenho.create_oval(self.coord[0]-raio,self.coord[1]-raio,self.coord[0]+raio,self.coord[1]+raio,outline=self.cordefora[1],fill=self.cordedentro[1])
+    def desenharincompleto(self):
+        raio = ((self.coord[2] - self.coord[0])**2 + (self.coord[3]- self.coord[1])**2)**0.5
+        desenho.create_oval(self.coord[0]-raio,self.coord[1]-raio,self.coord[0]+raio,self.coord[1]+raio,outline=self.cordefora[1],fill=self.cordedentro[1],dash=(4,2))
+class retangulo(figurA):
+    def __init__(self,event,cordeoutline,cordeprenchimento):
+        self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
+        self.cordefora=cordeoutline
+        self.cordedentro=cordeprenchimento
+    def atualizar_figura_nova(self,event):
+            self.coord[2]=event.x
+            self.coord[3]=event.y
+            figs.desenhar_figuras()
+            self.desenharincompleto()
+    def desenhar(self):
+        desenho.create_rectangle(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1])
+    def desenharincompleto(self):
+        desenho.create_rectangle(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1],dash=(4,2))
+class oval(figurA):
+    def __init__(self,event,cordeoutline,cordeprenchimento):
+        self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
+        self.cordefora=cordeoutline
+        self.cordedentro=cordeprenchimento
+    def atualizar_figura_nova(self,event):
+            self.coord[2]=event.x
+            self.coord[3]=event.y
+            figs.desenhar_figuras()
+            self.desenharincompleto()
+    def desenhar(self):
+        desenho.create_oval(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1])
+    def desenharincompleto(self):
+        desenho.create_oval(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1],dash=(4,2))
 # Quando mouse é movido com o botão pressionado
 ##fig_nova[2] e [3 ] sao as cores, já que elas já se incluem em iniciarfiguranova, achei melhor só usar o valor do proprio fig nova
 ##eu manti a definição de atualizar figura nova só pra lembrar, vamo remover issso no futuro
