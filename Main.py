@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.colorchooser
-
+from abc import ABC, abstractmethod
 ##aqui a parte nova !
 class figuras:
     def __init__(self):
@@ -10,77 +10,70 @@ class figuras:
     ##cor 1 é o outline, cor 2 é o preenchimento (SUJEITO A MUDANÇA)
     def desenhar_figuras(self):
         desenho.delete("all")
-        for fig, values,cor1,cor2 in self.figuras:
-            if fig == "linha":
-                desenho.create_line(values[0], values[1], values[2], values[3],fill=cor1)
-            elif fig == "rabisco":
-                desenho.create_line(values,fill=cor1)
-            elif fig == "retângulo":
-                desenho.create_rectangle(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
-            elif fig == 'oval':
-                desenho.create_oval(values[0], values[1], values[2], values[3],outline=cor1,fill=cor2)
-            else : #circulo
-                raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
-                desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio,outline=cor1,fill=cor2)
-    def desenhar_figura_nova(self):
-        fig, values,cor1,cor2 = fig_nova
-        if fig == "linha":
-            desenho.create_line(values[0], values[1], values[2], values[3], dash=(4, 2),fill=cor1)
-        elif fig == "rabisco":
-            desenho.create_line(values, dash=(4, 2),fill=cor1)
-        elif fig == "retângulo":
-            desenho.create_rectangle(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
-        elif fig == 'oval':
-            desenho.create_oval(values[0], values[1], values[2], values[3], dash=(4, 2),outline=cor1,fill=cor2)
-        else : #circulo
-            raio = ((values[2] - values[0])**2 + (values[3]- values[1])**2)**0.5
-            desenho.create_oval(values[0] - raio, values[1] - raio, values[0]+raio, values[1] + raio, dash=(4, 2),outline=cor1,fill=cor2)
-#Identifica qual figura será desenhada
-def iniciar_figura_nova(event): 
-    global fig_nova
-    if formato.get() == 'linha':
-        fig_nova = ("linha", (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
-    elif formato.get() == 'rabisco':
-        fig_nova = ("rabisco", [(event.x, event.y)],cordeoutline[1],cordeprenchimento[1])
-    elif formato.get() == 'retângulo':
-        fig_nova = ("retângulo", (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
-    elif formato.get() == 'oval':
-        fig_nova = ('oval', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
-    else : #circulo 
-        fig_nova = ('circulo', (event.x, event.y, event.x, event.y),cordeoutline[1],cordeprenchimento[1])
-
+        for fig in self.figuras:
+            fig.desenhar()
+        
+##já que toda figura tem que começar e se atualizar, eu criei essa classe abstráta, eu tirei iniciar figura pq meio que o criarobjeto ja faz isso
+class figurA(ABC):
+    @abstractmethod
+    def atualizar_figura_nova(self):
+        pass
+    @abstractmethod
+    def desenhar(self):
+        pass
+    @abstractmethod
+    def desenharincompleto(self):
+        pass
+class linha(figurA):
+    def __init__(self,event,cordeoutline):
+        self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
+        self.cor=cordeoutline
+    def atualizar_figura_nova(self,event):
+            self.coord[2]=event.x
+            self.coord[3]=event.y
+            figs.desenhar_figuras()
+            self.desenharincompleto()
+    def desenhar(self):
+        desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cor[1])
+    def desenharincompleto(self):
+        desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cor[1],dash=(4,2))
+class rabisco(figurA):
+    def __init__(self):
+        super().__init__()
 # Quando mouse é movido com o botão pressionado
 ##fig_nova[2] e [3 ] sao as cores, já que elas já se incluem em iniciarfiguranova, achei melhor só usar o valor do proprio fig nova
-def atualizar_figura_nova(event):
-    global fig_nova
-    if fig_nova[0] == "rabisco":
-        fig_nova[1].append((event.x, event.y))
-    elif fig_nova[0] == "linha":
-        fig_nova = ("linha", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-    elif fig_nova[0] == "retângulo":
-        fig_nova = ("retângulo", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-    elif fig_nova[0] == 'oval':
-        fig_nova = ('oval', (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-    else:
-        fig_nova = ('circulo', (fig_nova[1][0], fig_nova[1][1], event.x, event.y), fig_nova[2], fig_nova[3])
+##eu manti a definição de atualizar figura nova só pra lembrar, vamo remover issso no futuro
+#def atualizar_figura_nova(event):
+#    global fig_nova
+ #   if fig_nova[0] == "rabisco":
+ #       fig_nova[1].append((event.x, event.y))
+  #  elif fig_nova[0] == "linha":
+   #     fig_nova = ("linha", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
+   # elif fig_nova[0] == "retângulo":
+   #     fig_nova = ("retângulo", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
+   # elif fig_nova[0] == 'oval':
+   #     fig_nova = ('oval', (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
+   # else:
+   #     fig_nova = ('circulo', (fig_nova[1][0], fig_nova[1][1], event.x, event.y), fig_nova[2], fig_nova[3])
         
-    figs.desenhar_figuras()
-    figs.desenhar_figura_nova()
+   # figs.desenhar_figuras()
+   # figs.desenhar_figura_nova()
 
 # Quando mouse é solto
 def incluir_figura_nova(event): 
-    if not incompleta(fig_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
-        figs.figuras.append(fig_nova) 
+    global fig_nova
+    if incompleta(fig_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
+        figs.figuras.append(fig_nova)
+        fig_nova=None
     figs.desenhar_figuras()
 
 
 
 def incompleta(figura):
-    fig, values,cor1,cor2 = figura
-    if fig == "linha" or fig == "retângulo" or fig == 'circulo' or fig == 'oval':
-        return (values[0], values[1]) == (values[2], values[3])
-    elif fig == "rabisco":
-        return len(values) <= 1
+    if isinstance(figura,rabisco):
+        return True
+    else:
+        return (figura.coord[0]!=figura.coord[2])and(figura.coord[1]!=figura.coord[3])
 #a funcaomudarcordeoutline e a outra checkam pra ver se o usuario nao cancelou/ fechou a janela e muda a cor pra cor do metodo
 def mudarcordeoutline():
     global cordeoutline
@@ -99,7 +92,24 @@ def mudarcordedentro(transparente=False):
         if corbruta!=(None,None):
             cordeprenchimento=corbruta
   
-
+def criarObjeto(event):
+    global fig_nova
+    match formato.get():
+        case 'linha':
+            fig_nova=linha(event,cordeoutline)
+        case 'rabisco':
+            fig_nova=rabisco(event,cordeoutline)
+        case 'retângulo':
+            fig_nova=retangulo(event,cordeoutline,cordeprenchimento)
+        case 'oval':
+            fig_nova=oval(event,cordeoutline,cordeprenchimento)
+        case 'círculos':
+            fig_nova=circulos(event,cordeoutline,cordeprenchimento)
+        case 'polígonos':
+            fig_nova=poligonos(event,cordeoutline,cordeprenchimento)
+def modificarcoordenadas(event):
+    if fig_nova!=None:
+        fig_nova.atualizar_figura_nova(event)
 #teoricamente você poderia digitar toda vez que colocasse um widget no frmae mas me poupe
 espacaomento={'padx':2,'pady':2}
 
@@ -143,9 +153,9 @@ desenho.grid(column=0,row=1,columnspan=5,**espacaomento)
 
 janelapropria.pack()
 
-desenho.bind('<ButtonPress-1>', iniciar_figura_nova)
-desenho.bind('<B1-Motion>', atualizar_figura_nova)
-desenho.bind('<ButtonRelease-1>', incluir_figura_nova)
+desenho.bind('<ButtonPress-1>', criarObjeto)
+desenho.bind('<B1-Motion>', modificarcoordenadas)
+desenho.bind('<ButtonRelease-1>', incluir_figura_nova)##mexer aqui
 
 
 janela.mainloop()
