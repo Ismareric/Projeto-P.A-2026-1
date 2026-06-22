@@ -38,8 +38,17 @@ class linha(figurA):
     def desenharincompleto(self):
         desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cor[1],dash=(4,2))
 class rabisco(figurA):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,event,cordeoutline):
+        self.coord=[(event.x,event.y)]##PONTO INICIAL e ponto final
+        self.cor=cordeoutline
+    def atualizar_figura_nova(self,event):
+        self.coord.append((event.x, event.y))
+        figs.desenhar_figuras()
+        self.desenharincompleto()
+    def desenhar(self):
+        desenho.create_line(self.coord,fill=self.cor[1])
+    def desenharincompleto(self):
+        desenho.create_line(self.coord,fill=self.cor[1],dash=(4,2))
 # Quando mouse é movido com o botão pressionado
 ##fig_nova[2] e [3 ] sao as cores, já que elas já se incluem em iniciarfiguranova, achei melhor só usar o valor do proprio fig nova
 ##eu manti a definição de atualizar figura nova só pra lembrar, vamo remover issso no futuro
@@ -71,7 +80,7 @@ def incluir_figura_nova(event):
 
 def incompleta(figura):
     if isinstance(figura,rabisco):
-        return True
+        return len(figura.coord)>1
     else:
         return (figura.coord[0]!=figura.coord[2])and(figura.coord[1]!=figura.coord[3])
 #a funcaomudarcordeoutline e a outra checkam pra ver se o usuario nao cancelou/ fechou a janela e muda a cor pra cor do metodo
