@@ -5,18 +5,28 @@ from classes import *
 
 def incluir_figura_nova(event): 
     global fig_nova
+    if formato.get() == 'polígonos':
+        return # Não incluir polígonos incompletos
+
     if incompleta(fig_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
         figs.figuras.append(fig_nova)
         fig_nova=None
     figs.desenhar_figuras(desenho)
 
-
+def fechar_poligono(event):
+    global fig_nova
+    if fig_nova is not None and isinstance(fig_nova, poligonos):
+        if len(fig_nova.coord) >= 6: 
+            figs.figuras.append(fig_nova)
+        fig_nova = None
+        figs.desenhar_figuras(desenho)
 
 def incompleta(figura):
     if isinstance(figura,rabisco):
         return len(figura.coord)>1
     else:
         return (figura.coord[0]!=figura.coord[2])and(figura.coord[1]!=figura.coord[3])
+    
 #a funcaomudarcordeoutline e a outra checkam pra ver se o usuario nao cancelou/ fechou a janela e muda a cor pra cor do metodo
 def mudarcordeoutline():
     global cordeoutline
@@ -38,6 +48,10 @@ def mudarcordedentro(transparente=False):
 def criarObjeto(event):
     dict={'linha':linha}
     global fig_nova
+
+    if formato.get() == 'polígonos' and fig_nova is not None and isinstance(fig_nova, poligonos):
+        fig_nova.adicionar_ponto(event)
+        return
 
     match formato.get():
         case 'linha':
@@ -78,7 +92,7 @@ texto1.grid(column=0,row=0,**espacaomento,sticky=W)
 #obs1 eu nao sabia oque esse string var era até olhar a documentação
 #obs2 eu nao sei se precisa ser exatamente atribuido à janela ou poderia ser o frame tbm
 formato=StringVar(janela)
-menu=ttk.OptionMenu(janelapropria,formato,'linha',*['linha','rabisco','retângulo','oval','círculos'])
+menu=ttk.OptionMenu(janelapropria,formato,'linha',*['linha','rabisco','retângulo','oval','círculos', 'polígonos'])
 menu.grid(column=1,row=0,sticky=W,**espacaomento)
 
 #cores padrão
@@ -102,7 +116,8 @@ janelapropria.pack()
 
 desenho.bind('<ButtonPress-1>', criarObjeto)
 desenho.bind('<B1-Motion>', modificarcoordenadas)
-desenho.bind('<ButtonRelease-1>', incluir_figura_nova)##mexer aqui
+desenho.bind('<ButtonRelease-1>', incluir_figura_nova)
+desenho.bind('<Button-3>', fechar_poligono) # Botão direito fecha o polígono
 
 
 janela.mainloop()
