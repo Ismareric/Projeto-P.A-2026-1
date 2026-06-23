@@ -146,5 +146,5 @@ class poligonos(figurA):
         if len(self.coord) == 4:
             desenho.create_line(self.coord[0], self.coord[1], self.coord[2], self.coord[3], fill=self.cordefora[1], dash=(4, 2))
 
-        elif len(self.coord) >= 4:
+        elif len(self.coord) >= 6:
             desenho.create_polygon(self.coord, outline=self.cordefora[1], fill=self.cordedentro[1], dash=(4, 2))
