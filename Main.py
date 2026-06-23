@@ -1,8 +1,10 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter.colorchooser
-from abc import ABC, abstractmethod
+from classes import *
+
 ##aqui a parte nova !
+from abc import ABC, abstractmethod
 class figuras:
     def __init__(self):
         self.figuras=[]
@@ -15,6 +17,9 @@ class figuras:
         
 ##já que toda figura tem que começar e se atualizar, eu criei essa classe abstráta, eu tirei iniciar figura pq meio que o criarobjeto ja faz isso
 class figurA(ABC):
+    def __init__(self,cordeoutline,cordeprenchimento):
+        self.cordefora=cordeoutline
+        self.cordedentro=cordeprenchimento
     @abstractmethod
     def atualizar_figura_nova(self):
         pass
@@ -26,34 +31,33 @@ class figurA(ABC):
         pass
 class linha(figurA):
     def __init__(self,event,cordeoutline):
+        super().__init__(cordeoutline,'')
         self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
-        self.cor=cordeoutline
     def atualizar_figura_nova(self,event):
             self.coord[2]=event.x
             self.coord[3]=event.y
             figs.desenhar_figuras()
             self.desenharincompleto()
     def desenhar(self):
-        desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cor[1])
+        desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cordefora[1])
     def desenharincompleto(self):
-        desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cor[1],dash=(4,2))
+        desenho.create_line(self.coord[0],self.coord[1],self.coord[2],self.coord[3],fill=self.cordefora[1],dash=(4,2))
 class rabisco(figurA):
     def __init__(self,event,cordeoutline):
+        super().__init__(cordeoutline,'')
         self.coord=[(event.x,event.y)]##PONTO INICIAL e ponto final
-        self.cor=cordeoutline
     def atualizar_figura_nova(self,event):
         self.coord.append((event.x, event.y))
         figs.desenhar_figuras()
         self.desenharincompleto()
     def desenhar(self):
-        desenho.create_line(self.coord,fill=self.cor[1])
+        desenho.create_line(self.coord,fill=self.cordefora[1])
     def desenharincompleto(self):
-        desenho.create_line(self.coord,fill=self.cor[1],dash=(4,2))
+        desenho.create_line(self.coord,fill=self.cordefora[1],dash=(4,2))
 class circulos(figurA):
     def __init__(self,event,cordeoutline,cordeprenchimento):
+        super().__init__(cordeoutline,cordeprenchimento)
         self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
-        self.cordefora=cordeoutline
-        self.cordedentro=cordeprenchimento
     def atualizar_figura_nova(self,event):
             self.coord[2]=event.x
             self.coord[3]=event.y
@@ -67,9 +71,8 @@ class circulos(figurA):
         desenho.create_oval(self.coord[0]-raio,self.coord[1]-raio,self.coord[0]+raio,self.coord[1]+raio,outline=self.cordefora[1],fill=self.cordedentro[1],dash=(4,2))
 class retangulo(figurA):
     def __init__(self,event,cordeoutline,cordeprenchimento):
+        super().__init__(cordeoutline,cordeprenchimento)
         self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
-        self.cordefora=cordeoutline
-        self.cordedentro=cordeprenchimento
     def atualizar_figura_nova(self,event):
             self.coord[2]=event.x
             self.coord[3]=event.y
@@ -81,9 +84,8 @@ class retangulo(figurA):
         desenho.create_rectangle(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1],dash=(4,2))
 class oval(figurA):
     def __init__(self,event,cordeoutline,cordeprenchimento):
+        super().__init__(cordeoutline,cordeprenchimento)
         self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
-        self.cordefora=cordeoutline
-        self.cordedentro=cordeprenchimento
     def atualizar_figura_nova(self,event):
             self.coord[2]=event.x
             self.coord[3]=event.y
@@ -93,26 +95,10 @@ class oval(figurA):
         desenho.create_oval(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1])
     def desenharincompleto(self):
         desenho.create_oval(self.coord[0],self.coord[1],self.coord[2],self.coord[3],outline=self.cordefora[1],fill=self.cordedentro[1],dash=(4,2))
-# Quando mouse é movido com o botão pressionado
-##fig_nova[2] e [3 ] sao as cores, já que elas já se incluem em iniciarfiguranova, achei melhor só usar o valor do proprio fig nova
-##eu manti a definição de atualizar figura nova só pra lembrar, vamo remover issso no futuro
-#def atualizar_figura_nova(event):
-#    global fig_nova
- #   if fig_nova[0] == "rabisco":
- #       fig_nova[1].append((event.x, event.y))
-  #  elif fig_nova[0] == "linha":
-   #     fig_nova = ("linha", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-   # elif fig_nova[0] == "retângulo":
-   #     fig_nova = ("retângulo", (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-   # elif fig_nova[0] == 'oval':
-   #     fig_nova = ('oval', (fig_nova[1][0], fig_nova[1][1], event.x, event.y),fig_nova[2],fig_nova[3])
-   # else:
-   #     fig_nova = ('circulo', (fig_nova[1][0], fig_nova[1][1], event.x, event.y), fig_nova[2], fig_nova[3])
-        
-   # figs.desenhar_figuras()
-   # figs.desenhar_figura_nova()
-
-# Quando mouse é solto
+class poligonos(figurA):
+    def __init__(self,event,cordeoutline,cordeprenchimento):
+        super().__init__(cordeoutline,cordeprenchimento)
+        self.coord=[event.x,event.y,event.x,event.y]##PONTO INICIAL e ponto final
 def incluir_figura_nova(event): 
     global fig_nova
     if incompleta(fig_nova): # para evitar incluir figuras incompletas, como uma linha sem comprimento ou um rabisco com um único ponto
@@ -146,7 +132,9 @@ def mudarcordedentro(transparente=False):
             cordeprenchimento=corbruta
   
 def criarObjeto(event):
+    dict={'linha':linha}
     global fig_nova
+
     match formato.get():
         case 'linha':
             fig_nova=linha(event,cordeoutline)
@@ -160,6 +148,8 @@ def criarObjeto(event):
             fig_nova=circulos(event,cordeoutline,cordeprenchimento)
         case 'polígonos':
             fig_nova=poligonos(event,cordeoutline,cordeprenchimento)
+        case _:
+            return None
 def modificarcoordenadas(event):
     if fig_nova!=None:
         fig_nova.atualizar_figura_nova(event)
