@@ -96,8 +96,8 @@ menu=ttk.OptionMenu(janelapropria,formato,'linha',*['linha','rabisco','retângul
 menu.grid(column=1,row=0,sticky=W,**espacaomento)
 
 #cores padrão
-cordeoutline=(None,'#000000')
-cordeprenchimento=(None,'')
+cordeoutline=(None,'#000000') #VAI PRO CONTROLER
+cordeprenchimento=(None,'') #VAI PRO CONTROLER
 
 #botões
 alterarcoresdeoutline=Button(janelapropria,text='Alterar Cor da Borda',command=mudarcordeoutline)
@@ -114,10 +114,10 @@ desenho.grid(column=0,row=1,columnspan=5,**espacaomento)
 
 janelapropria.pack()
 
-desenho.bind('<ButtonPress-1>', criarObjeto)
-desenho.bind('<B1-Motion>', modificarcoordenadas)
-desenho.bind('<ButtonRelease-1>', incluir_figura_nova)
-desenho.bind('<Button-3>', fechar_poligono) # Botão direito fecha o polígono
+desenho.bind('<ButtonPress-1>', criarObjeto) #VAI PRO CONTROLER
+desenho.bind('<B1-Motion>', modificarcoordenadas) #VAI PRO CONTROLER
+desenho.bind('<ButtonRelease-1>', incluir_figura_nova) #VAI PRO CONTROLER
+desenho.bind('<Button-3>', fechar_poligono) #VAI PRO CONTROLER
 
 
 janela.mainloop()
