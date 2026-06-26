@@ -114,10 +114,7 @@ desenho.grid(column=0,row=1,columnspan=5,**espacaomento)
 
 janelapropria.pack()
 
-desenho.bind('<ButtonPress-1>', criarObjeto) #VAI PRO CONTROLER
-desenho.bind('<B1-Motion>', modificarcoordenadas) #VAI PRO CONTROLER
-desenho.bind('<ButtonRelease-1>', incluir_figura_nova) #VAI PRO CONTROLER
-desenho.bind('<Button-3>', fechar_poligono) #VAI PRO CONTROLER
+
 
 
 janela.mainloop()
