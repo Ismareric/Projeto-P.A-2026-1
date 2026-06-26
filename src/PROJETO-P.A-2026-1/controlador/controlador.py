@@ -1,10 +1,11 @@
-from modelo.formas import *
-from visao.interface import *
+from modelo.formas import Figuras, Linha
+from visao.interface import PaintView
 
 class PaintControler:
-    def __init__(self):
-        # Inicializa o controlador
+    def __init__(self, modelo, visao):
+        self.modelo = modelo
+        self.visao=visao
     
     def executar(self):
-        # Executa a aplicação
+        self.visao.iniciar_loop()
     
