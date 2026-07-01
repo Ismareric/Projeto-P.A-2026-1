@@ -3,12 +3,10 @@ from visao.interface import PaintView
 from controlador.controlador import PaintControler
 
 def main():
-    modelo = Figuras()
-    visao = PaintView()
     
-    controlador = PaintControler(modelo, visao)
+    controlador = PaintControler()
 
     controlador.executar()
 
-if __name__ == "__main__":
-    main()
+
+main()

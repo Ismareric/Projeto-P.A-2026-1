@@ -3,13 +3,15 @@ from visao.interface import PaintView
 
 
 class PaintControler: #Classe chamada pela Main
-    def __init__(self, modelo, visao):
-        self.modelo = modelo
-        self.visao= visao
+    def __init__(self):
+        self.modelo = Figuras()
+        self.visao= PaintView()
         self.cordeoutline = (None, "#000000")
         self.cordepreenchimento = (None, '')
         self.fig_nova = None
         self.rastrear_mouse()
+        self.visao.alterarcoresdeoutline.config(command=self.mudarcordeoutline)
+        self.visao.alterarcoresdprenchimento.config(command=self.mudarcordepreenchimento)
     
     def executar(self): # Chamda pela Main
         self.visao.iniciar_loop()
@@ -25,9 +27,17 @@ class PaintControler: #Classe chamada pela Main
         if cor_escolhida != (None, None):
             self.cordeoutline = cor_escolhida
 
+    def mudarcordepreenchimento(self): 
+        cor_escolhida = self.visao.abrir_seletor_de_cor()
+        if cor_escolhida != (None, None):
+            self.cordepreenchimento = cor_escolhida
+
     def criar_objeto(self, event): 
         
-        #Strings maiúsculas e com acento.
+        if self.visao.formato.get() == 'Polígonos' and self.fig_nova is not None and isinstance(self.fig_nova, Poligonos):
+            self.fig_nova.adicionar_ponto(event)
+            return
+        
         match self.visao.formato.get():
             
             case 'Linha':
@@ -52,13 +62,23 @@ class PaintControler: #Classe chamada pela Main
             self.visao.desenhar_incompleto(self.visao.formato.get(), self.fig_nova.coord, self.cordeoutline[1], self.cordepreenchimento[1])
 
     def incluir_figura_nova(self, event):
+        if self.visao.formato.get() == 'Polígonos':
+            return
+
         if self.incompleta(self.fig_nova):
             self.modelo.figuras.append(self.fig_nova)
         self.fig_nova = None
         self.visao.desenhar_todas(self.modelo.figuras)
 
+    def fechar_poligono(self, event):
+        if self.fig_nova is not None and isinstance(self.fig_nova, Poligonos):
+            if len(self.fig_nova.coord) >= 6:
+                self.modelo.figuras.append(self.fig_nova)
+            self.fig_nova = None
+            self.visao.desenhar_todas(self.modelo.figuras)
+    
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
         self.visao.desenho.bind('<B1-Motion>', self.modificar_coordenadas) 
         self.visao.desenho.bind('<ButtonRelease-1>', self.incluir_figura_nova) 
-        #self.visao.desenho.bind('<Button-3>', fechar_poligono) #Falta implementar o poligono para tirar a observação dessa linha
+        self.visao.desenho.bind('<Button-3>', self.fechar_poligono) #Falta implementar o poligono para tirar a observação dessa linha

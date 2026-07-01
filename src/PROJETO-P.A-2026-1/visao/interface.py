@@ -54,7 +54,8 @@ class PaintView: #Classe chamada pela Main
                 case 'Circulos':
                     raio = ((fig.coord[2] - fig.coord[0])**2 + (fig.coord[3]- fig.coord[1])**2)**0.5
                     self.desenho.create_oval(fig.coord[0]-raio, fig.coord[1]-raio, fig.coord[0]+raio, fig.coord[1]+raio, outline= fig.cordefora, fill=fig.cordedentro)
-
+                case 'Poligonos':
+                    self.desenho.create_polygon(fig.coord, outline=fig.cordefora, fill= fig.cordedentro )
     
     def desenhar_incompleto(self, forma, coord, cordeoutline, cordepreenchimento):
         match forma: #Maiuscolo e com acento
@@ -69,5 +70,7 @@ class PaintView: #Classe chamada pela Main
             case 'Círculos':
                 raio = ((coord[2] - coord[0])**2 + (coord[3]- coord[1])**2)**0.5
                 self.desenho.create_oval(coord[0]-raio, coord[1]-raio, coord[0]+raio, coord[1]+raio, outline= cordeoutline, fill=cordepreenchimento, dash=(4, 4))
+            case 'Polígonos':
+                self.desenho.create_polygon(coord, outline=cordeoutline, fill= cordepreenchimento, dash=(4, 4) )
 
     
