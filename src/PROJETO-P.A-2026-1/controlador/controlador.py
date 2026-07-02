@@ -12,6 +12,7 @@ class PaintControler: #Classe chamada pela Main
         self.rastrear_mouse()
         self.visao.alterarcoresdeoutline.config(command=self.mudarcordeoutline)
         self.visao.alterarcoresdprenchimento.config(command=self.mudarcordepreenchimento)
+        self.visao.semprenchimento.config(command=self.remover_preenchimento)
     
     def executar(self): # Chamda pela Main
         self.visao.iniciar_loop()
@@ -19,6 +20,8 @@ class PaintControler: #Classe chamada pela Main
     def incompleta(self, figura): #Mesma função do anterior, falta modificar para aceitar o poligono
         if isinstance(figura, Rabisco):
             return len(figura.coord)>1
+        if isinstance(figura, Poligonos):
+            return len(figura.coord) >= 6
         else :
             return (figura.coord[0] != figura.coord[2]) and (figura.coord[1]!=figura.coord[3])
     
@@ -76,9 +79,12 @@ class PaintControler: #Classe chamada pela Main
                 self.modelo.figuras.append(self.fig_nova)
             self.fig_nova = None
             self.visao.desenhar_todas(self.modelo.figuras)
+
+    def remover_preenchimento(self):
+        self.cordepreenchimento = (None, '') 
     
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
         self.visao.desenho.bind('<B1-Motion>', self.modificar_coordenadas) 
         self.visao.desenho.bind('<ButtonRelease-1>', self.incluir_figura_nova) 
-        self.visao.desenho.bind('<Button-3>', self.fechar_poligono) #Falta implementar o poligono para tirar a observação dessa linha
+        self.visao.desenho.bind('<Button-3>', self.fechar_poligono) 
