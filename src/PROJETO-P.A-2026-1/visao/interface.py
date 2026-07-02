@@ -7,7 +7,15 @@ import tkinter.colorchooser
 class PaintView: #Classe chamada pela Main
     def __init__(self):
         self.janela = Tk()
-        self.frame = Frame(self.janela,width=1280,height=720)
+        self.janela.geometry("1280x720")
+        self.janela.rowconfigure(0, weight=1)
+        self.janela.columnconfigure(0, weight=1)
+
+        
+        self.frame = Frame(self.janela)
+        self.frame.grid(column=0, row=0, sticky='nsew')
+        self.frame.rowconfigure(1, weight=1)
+        self.frame.columnconfigure(0, weight=1)
 
         espacamento = {'padx':2,'pady':2}
 
@@ -27,10 +35,10 @@ class PaintView: #Classe chamada pela Main
         self.alterarcoresdprenchimento.grid(column=3,row=0,sticky=W,**espacamento)
         self.semprenchimento.grid(column=4, row=0, sticky=W, **espacamento)
 
-        self.desenho = Canvas(self.frame, width=1280, height=720, bg='#ffffff')
-        self.desenho.grid(column=0, row=1, columnspan=5, **espacamento)
+        self.desenho = Canvas(self.frame, bg='#ffffff')
+        self.desenho.grid(column=0, row=1, columnspan=5, **espacamento, sticky= 'nsew')
 
-        self.frame.pack()
+        
 
     def iniciar_loop(self): #Chamada pela função Executar do controlador
         self.janela.mainloop()

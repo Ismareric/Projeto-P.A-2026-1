@@ -1,11 +1,19 @@
 from modelo.formas import *
 from visao.interface import PaintView
+from controlador.estados import *
 
 
 class PaintControler: #Classe chamada pela Main
     def __init__(self):
         self.modelo = Figuras()
         self.visao= PaintView()
+
+        self.ferramentas = {
+            "Linha" : EstadoLinha()
+        }
+
+        self.estado_atual = self.ferramentas["Linha"]
+
         self.cordeoutline = (None, "#000000")
         self.cordepreenchimento = (None, '')
         self.fig_nova = None
@@ -13,7 +21,17 @@ class PaintControler: #Classe chamada pela Main
         self.visao.alterarcoresdeoutline.config(command=self.mudarcordeoutline)
         self.visao.alterarcoresdprenchimento.config(command=self.mudarcordepreenchimento)
         self.visao.semprenchimento.config(command=self.remover_preenchimento)
+
+        self.visao.formato.trace_add("write", self.mudar_ferramenta)
     
+    def mudar_ferramenta(self, *args):
+        nome_ferramenta = self.visao.formato.get()
+
+        self.estado_atual = self.ferramentas[nome_ferramenta]
+        
+        self.fig_nova = None
+        self.visao.desenhar_todas(self.modelo.figuras)
+
     def executar(self): # Chamda pela Main
         self.visao.iniciar_loop()
     
