@@ -50,35 +50,9 @@ class PaintView: #Classe chamada pela Main
         self.desenho.delete("all")
 
         for fig in figs:
-            match fig.__class__.__name__:
-                case "Linha":
-                    self.desenho.create_line(fig.coord[0], fig.coord[1], fig.coord[2], fig.coord[3], fill=fig.cor)
-                case "Rabisco":
-                    self.desenho.create_line(fig.coord, fill= fig.cor)
-                case 'Retangulo':
-                    self.desenho.create_rectangle(fig.coord[0], fig.coord[1], fig.coord[2], fig.coord[3], outline= fig.cordefora, fill=fig.cordedentro)
-                case 'Oval':
-                    self.desenho.create_oval(fig.coord[0], fig.coord[1], fig.coord[2], fig.coord[3], outline= fig.cordefora, fill=fig.cordedentro)
-                case 'Circulos':
-                    raio = ((fig.coord[2] - fig.coord[0])**2 + (fig.coord[3]- fig.coord[1])**2)**0.5
-                    self.desenho.create_oval(fig.coord[0]-raio, fig.coord[1]-raio, fig.coord[0]+raio, fig.coord[1]+raio, outline= fig.cordefora, fill=fig.cordedentro)
-                case 'Poligonos':
-                    self.desenho.create_polygon(fig.coord, outline=fig.cordefora, fill= fig.cordedentro )
-    
-    def desenhar_incompleto(self, forma, coord, cordeoutline, cordepreenchimento):
-        match forma: #Maiuscolo e com acento
-            case "Linha":
-                self.desenho.create_line(coord[0], coord[1], coord[2], coord[3], fill= cordeoutline, dash=(4,4))
-            case "Rabisco":
-                self.desenho.create_line(coord, fill=cordeoutline, dash=(4, 4))
-            case 'Retângulo':
-                    self.desenho.create_rectangle(coord[0], coord[1], coord[2], coord[3], outline= cordeoutline, fill=cordepreenchimento, dash= (4, 4))
-            case 'Oval':
-                self.desenho.create_oval(coord[0], coord[1], coord[2], coord[3], outline=cordeoutline, fill=cordepreenchimento, dash= (4, 4))
-            case 'Círculos':
-                raio = ((coord[2] - coord[0])**2 + (coord[3]- coord[1])**2)**0.5
-                self.desenho.create_oval(coord[0]-raio, coord[1]-raio, coord[0]+raio, coord[1]+raio, outline= cordeoutline, fill=cordepreenchimento, dash=(4, 4))
-            case 'Polígonos':
-                self.desenho.create_polygon(coord, outline=cordeoutline, fill= cordepreenchimento, dash=(4, 4) )
 
-    
+            fig.desenhar(self.desenho)
+            
+    def desenhar_incompleto(self, fig):
+        fig.desenhar_incompleto(self.desenho)
+        

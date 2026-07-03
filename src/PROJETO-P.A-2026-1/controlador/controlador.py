@@ -9,7 +9,12 @@ class PaintControler: #Classe chamada pela Main
         self.visao= PaintView()
 
         self.ferramentas = {
-            "Linha" : EstadoLinha()
+            "Linha" : EstadoLinha(),
+            "Rabisco" : EstadoRabisco(),
+            "Retângulo" : EstadoRetangulo(),
+            "Oval" : EstadoOval(),
+            "Círculos" : EstadoCirculo(),
+            "Polígonos":EstadoPoligono()
         }
 
         self.estado_atual = self.ferramentas["Linha"]
@@ -55,41 +60,29 @@ class PaintControler: #Classe chamada pela Main
 
     def criar_objeto(self, event): 
         
-        if self.visao.formato.get() == 'Polígonos' and self.fig_nova is not None and isinstance(self.fig_nova, Poligonos):
-            self.fig_nova.adicionar_ponto(event)
-            return
-        
-        match self.visao.formato.get():
-            
-            case 'Linha':
-                self.fig_nova=Linha(event, self.cordeoutline)
-            case 'Rabisco':
-                self.fig_nova=Rabisco(event, self.cordeoutline)
-            case 'Retângulo':
-                self.fig_nova= Retangulo(event, self.cordeoutline, self.cordepreenchimento)
-            case 'Oval':
-                self.fig_nova= Oval(event, self.cordeoutline, self.cordepreenchimento)
-            case 'Círculos':
-                self.fig_nova= Circulos(event, self.cordeoutline, self.cordepreenchimento)
-            case 'Polígonos':
-                self.fig_nova= Poligonos(event, self.cordeoutline, self.cordepreenchimento)
-            case _:
-                return None
+       self.estado_atual.ao_clicar(self, event)
+#match forma: #Maiuscolo e com acento
+            #case "Linha":
+                #self.desenho.create_line(coord[0], coord[1], coord[2], coord[3], fill= cordeoutline, dash=(4,4))
+            #case "Rabisco":
+                #self.desenho.create_line(coord, fill=cordeoutline, dash=(4, 4))
+            #case 'Retângulo':
+                    #self.desenho.create_rectangle(coord[0], coord[1], coord[2], coord[3], outline= cordeoutline, fill=cordepreenchimento, dash= (4, 4))
+            #case 'Oval':
+                #self.desenho.create_oval(coord[0], coord[1], coord[2], coord[3], outline=cordeoutline, fill=cordepreenchimento, dash= (4, 4))
+            #case 'Círculos':
+                #raio = ((coord[2] - coord[0])**2 + (coord[3]- coord[1])**2)**0.5
+                #self.desenho.create_oval(coord[0]-raio, coord[1]-raio, coord[0]+raio, coord[1]+raio, outline= cordeoutline, fill=cordepreenchimento, dash=(4, 4))
+            #case 'Polígonos':
+                #self.desenho.create_polygon(coord, outline=cordeoutline, fill= cordepreenchimento, dash=(4, 4) )
 
+    
     def modificar_coordenadas(self, event):
-        if self.fig_nova != None:
-            self.fig_nova.atualizar_figura_nova(event)
-            self.visao.desenhar_todas(self.modelo.figuras)
-            self.visao.desenhar_incompleto(self.visao.formato.get(), self.fig_nova.coord, self.cordeoutline[1], self.cordepreenchimento[1])
+       
+       self.estado_atual.ao_arrastar(self, event)
 
     def incluir_figura_nova(self, event):
-        if self.visao.formato.get() == 'Polígonos':
-            return
-
-        if self.incompleta(self.fig_nova):
-            self.modelo.figuras.append(self.fig_nova)
-        self.fig_nova = None
-        self.visao.desenhar_todas(self.modelo.figuras)
+        self.estado_atual.ao_soltar(self, event)
 
     def fechar_poligono(self, event):
         if self.fig_nova is not None and isinstance(self.fig_nova, Poligonos):
