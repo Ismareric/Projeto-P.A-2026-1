@@ -52,29 +52,17 @@ class PaintControler: #Classe chamada pela Main
         cor_escolhida = self.visao.abrir_seletor_de_cor()
         if cor_escolhida != (None, None):
             self.cordeoutline = cor_escolhida
+            self.visao.alterarcoresdeoutline.config(bg=cor_escolhida[1])
 
     def mudarcordepreenchimento(self): 
         cor_escolhida = self.visao.abrir_seletor_de_cor()
         if cor_escolhida != (None, None):
             self.cordepreenchimento = cor_escolhida
+            self.visao.alterarcoresdprenchimento.config(bg=cor_escolhida[1])
 
     def criar_objeto(self, event): 
         
        self.estado_atual.ao_clicar(self, event)
-#match forma: #Maiuscolo e com acento
-            #case "Linha":
-                #self.desenho.create_line(coord[0], coord[1], coord[2], coord[3], fill= cordeoutline, dash=(4,4))
-            #case "Rabisco":
-                #self.desenho.create_line(coord, fill=cordeoutline, dash=(4, 4))
-            #case 'Retângulo':
-                    #self.desenho.create_rectangle(coord[0], coord[1], coord[2], coord[3], outline= cordeoutline, fill=cordepreenchimento, dash= (4, 4))
-            #case 'Oval':
-                #self.desenho.create_oval(coord[0], coord[1], coord[2], coord[3], outline=cordeoutline, fill=cordepreenchimento, dash= (4, 4))
-            #case 'Círculos':
-                #raio = ((coord[2] - coord[0])**2 + (coord[3]- coord[1])**2)**0.5
-                #self.desenho.create_oval(coord[0]-raio, coord[1]-raio, coord[0]+raio, coord[1]+raio, outline= cordeoutline, fill=cordepreenchimento, dash=(4, 4))
-            #case 'Polígonos':
-                #self.desenho.create_polygon(coord, outline=cordeoutline, fill= cordepreenchimento, dash=(4, 4) )
 
     
     def modificar_coordenadas(self, event):
@@ -93,6 +81,7 @@ class PaintControler: #Classe chamada pela Main
 
     def remover_preenchimento(self):
         self.cordepreenchimento = (None, '') 
+        self.visao.alterarcoresdprenchimento.config(bg="#d9d9d9")
     
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
