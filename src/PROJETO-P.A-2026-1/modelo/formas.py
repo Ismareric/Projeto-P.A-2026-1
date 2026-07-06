@@ -60,7 +60,7 @@ class Circulos(FigurA):
         canvas.create_oval(self.coord[0]-raio, self.coord[1]-raio, self.coord[0]+raio, self.coord[1]+raio, outline= self.cordefora, fill=self.cordedentro)
     def desenhar_incompleto(self, canvas):
         raio = ((self.coord[2] - self.coord[0])**2 + (self.coord[3]- self.coord[1])**2)**0.5
-        canvas.create_oval(self.coord[0]-raio, self.coord[1]-raio, self.coord[0]+raio, self.coord[1]+raio, outline= self.cordefora, fill=self.cordedentro,dash=(4,4))
+        canvas.create_oval(self.coord[0]-raio, self.coord[1]-raio, self.coord[0]+raio, self.coord[1]+raio, outline= self.cordefora, fill=self.cordedentro,dash=(4,4), stipple="gray75")
 
 class Retangulo(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -75,7 +75,7 @@ class Retangulo(FigurA):
         canvas.create_rectangle(self.coord, fill=self.cordedentro,outline=self.cordefora)
 
     def desenhar_incompleto(self, canvas):
-        canvas.create_rectangle(self.coord, fill=self.cordedentro,outline=self.cordefora, dash=(4,4))
+        canvas.create_rectangle(self.coord, fill=self.cordedentro,outline=self.cordefora, dash=(4,4), stipple="gray75")
 
 class Oval(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -90,7 +90,7 @@ class Oval(FigurA):
         canvas.create_oval(self.coord, fill=self.cordedentro,outline=self.cordefora)
 
     def desenhar_incompleto(self, canvas):
-        canvas.create_oval(self.coord, fill=self.cordedentro,outline=self.cordefora, dash=(4,4))
+        canvas.create_oval(self.coord, fill=self.cordedentro,outline=self.cordefora, dash=(4,4), stipple="gray75")
 
 class Poligonos(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -109,4 +109,4 @@ class Poligonos(FigurA):
         canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro )
 
     def desenhar_incompleto(self, canvas):
-        canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro ,dash=(4,4))
+        canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro ,dash=(4,4), stipple="gray75")
