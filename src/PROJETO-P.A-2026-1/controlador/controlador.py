@@ -1,6 +1,7 @@
 from modelo.formas import *
 from visao.interface import PaintView
 from controlador.estados import *
+from tkinter import filedialog
 
 
 class PaintControler: #Classe chamada pela Main
@@ -26,8 +27,32 @@ class PaintControler: #Classe chamada pela Main
         self.visao.alterarcoresdeoutline.config(command=self.mudarcordeoutline)
         self.visao.alterarcoresdprenchimento.config(command=self.mudarcordepreenchimento)
         self.visao.semprenchimento.config(command=self.remover_preenchimento)
+        self.visao.salvar.config(command=self.salvar)
+        self.visao.abrir.config(command= self.abrir)
 
         self.visao.formato.trace_add("write", self.mudar_ferramenta)
+
+    def salvar(self):
+        caminho = filedialog.asksaveasfilename(
+            title= 'Salvar o Desenho',
+            defaultextension=".paint",
+            filetypes=[("Arquivos Paint", "*.paint"), ("Todos os arquivos", "*.*")],
+            initialdir= "/home/luis/Projeto/Projeto-P.A-2026-1/src/PROJETO-P.A-2026-1/Desenhos Salvos"
+        )
+
+        if caminho:
+            self.modelo.salvar_arquivo(caminho)
+
+    def abrir(self):
+        caminho = filedialog.askopenfilename(
+            title="Abrir Desenho",
+            filetypes=[("Arquivos Paint", "*.paint"), ("Todos os arquivos", "*.*")],
+            initialdir="/home/luis/Projeto/Projeto-P.A-2026-1/src/PROJETO-P.A-2026-1/Desenhos Salvos"
+        )
+
+        if caminho:
+            self.modelo.abrir_arquivo(caminho)
+            self.visao.desenhar_todas(self.modelo.figuras)
     
     def mudar_ferramenta(self, *args):
         nome_ferramenta = self.visao.formato.get()

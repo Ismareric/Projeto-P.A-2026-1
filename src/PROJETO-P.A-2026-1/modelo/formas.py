@@ -1,9 +1,19 @@
 from abc import ABC, abstractmethod
 from tkinter import *
+import pickle
 #Apenas guarda as informações referentes às figuras
 class Figuras:
     def __init__(self):
         self.figuras = []
+
+    def salvar_arquivo(self, caminho):
+        with open(caminho, 'wb') as arquivo:
+            pickle.dump(self.figuras, arquivo)
+
+    def abrir_arquivo(self, caminho):
+        with open(caminho, 'rb') as arquivo:
+            self.figuras = pickle.load(arquivo)
+
 
 class FigurA(ABC):
     @abstractmethod

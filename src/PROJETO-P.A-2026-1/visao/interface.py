@@ -34,6 +34,11 @@ class PaintView: #Classe chamada pela Main
         texto2 = Label(self.frame, text="Cor da Linha:")
         texto3= Label(self.frame, text="Cor de Preenchimento:")
 
+        self.salvar = Button(self.frame, text='Salvar')
+        self.abrir = Button(self.frame, text='Abrir')
+
+        self.salvar.grid(column=7, row=0, **espacamento, sticky=W)
+        self.abrir.grid(column=8, row=0, **espacamento, sticky=W)
 
         texto2.grid(column=2, row= 0)
         texto3.grid(column=4, row=0)
@@ -42,7 +47,7 @@ class PaintView: #Classe chamada pela Main
         self.semprenchimento.grid(column=6, row=0, sticky=W, **espacamento)
 
         self.desenho = Canvas(self.frame, bg='#ffffff')
-        self.desenho.grid(column=0, row=1, columnspan=7, **espacamento, sticky= 'nsew')
+        self.desenho.grid(column=0, row=1, columnspan=9, **espacamento, sticky= 'nsew')
 
         
 
