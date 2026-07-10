@@ -110,9 +110,17 @@ class EstadoPoligono(EstadoFerramenta):
 
     def ao_soltar(self, controlador, event):
         return
+    
     def ao_clicar_direito(self,controlador,event):
         if controlador.incompleta(controlador.fig_nova):
             controlador.modelo.figuras.append(controlador.fig_nova)
         controlador.fig_nova = None
         controlador.visao.desenhar_todas(controlador.modelo.figuras)
-    
+
+class EstadoSeleçao(EstadoFerramenta):
+    def ao_clicar(self, controlador, event):
+        controlador.procurar_figura(event)
+    def ao_arrastar(self, controlador, event):
+        pass
+    def ao_soltar(self, controlador, event):
+        pass

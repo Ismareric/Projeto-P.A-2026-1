@@ -28,6 +28,10 @@ class FigurA(ABC):
     def desenhar_incompleto(self, canva):
         pass
 
+    @abstractmethod
+    def verificar_ponto(self, event):
+        pass
+
 class Linha(FigurA):
     def __init__(self, event, cordeoutline):
         self.coord = [event.x, event.y, event.x, event.y]
@@ -77,6 +81,7 @@ class Retangulo(FigurA):
         self.coord = [event.x, event.y, event.x, event.y]
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
+        self.selecionado = False
 
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
@@ -86,6 +91,17 @@ class Retangulo(FigurA):
 
     def desenhar_incompleto(self, canvas):
         canvas.create_rectangle(self.coord, fill=self.cordedentro,outline=self.cordefora, dash=(4,4), stipple="gray75")
+
+    def verificar_ponto(self, event):
+        x, y = event.x, event.y
+        
+
+        if (self.coord[0] <= x <=self.coord[2] and self.coord[1] <= y <=self.coord[3])or(self.coord[0] >= x >=self.coord[2] and self.coord[1] >= y >=self.coord[3])or(self.coord[0] >= x >=self.coord[2] and self.coord[1] <= y <=self.coord[3])or(self.coord[0] <= x <=self.coord[2] and self.coord[1] >= y >=self.coord[3]) :
+            return True
+
+        else :
+            return False
+        
 
 class Oval(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):

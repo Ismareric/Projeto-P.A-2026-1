@@ -25,7 +25,7 @@ class PaintView: #Classe chamada pela Main
 
         self.formato = StringVar(self.janela)
 
-        menu=ttk.OptionMenu(self.frame,self.formato,'Linha',*['Linha','Rabisco','Retângulo','Oval','Círculos', 'Polígonos'])
+        menu=ttk.OptionMenu(self.frame,self.formato,'Linha',*['Seleção','Linha','Rabisco','Retângulo','Oval','Círculos', 'Polígonos'])
         menu.grid(column=1,row=0,sticky=W,**espacamento)
 
         self.alterarcoresdeoutline=Button(self.frame, bg= 'black')
@@ -62,7 +62,10 @@ class PaintView: #Classe chamada pela Main
 
         for fig in figs:
 
-            fig.desenhar(self.desenho)
+            if fig.selecionado:
+                fig.desenhar_incompleto(self.desenho)
+            else:
+                fig.desenhar(self.desenho)
             
             
     def desenhar_incompleto(self, fig):
