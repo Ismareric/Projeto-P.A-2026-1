@@ -110,7 +110,7 @@ class PaintControler: #Classe chamada pela Main
         self.cordepreenchimento = (None, '') 
         self.visao.alterarcoresdprenchimento.config(bg="#d9d9d9")
     
-    def procurar_figura(self, event): #mover para o modelo
+    def procurar_figuranomodelo(self, event): #mover para o modelo
         index=len(self.modelo.figuras)-1
         while index>=0:
             if self.modelo.figuras[index].verificar_ponto(event):

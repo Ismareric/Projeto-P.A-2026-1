@@ -119,7 +119,7 @@ class EstadoPoligono(EstadoFerramenta):
 
 class EstadoSeleçao(EstadoFerramenta):
     def ao_clicar(self, controlador, event):
-        controlador.procurar_figura(event)
+        controlador.procurar_figuranomodelo(event)
     def ao_arrastar(self, controlador, event):
         pass
     def ao_soltar(self, controlador, event):

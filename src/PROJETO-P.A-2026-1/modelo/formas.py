@@ -63,6 +63,8 @@ class Rabisco(FigurA):
 
     def desenhar_incompleto(self, canvas):
         canvas.create_line(self.coord, fill=self.cor, dash=(4,4))
+    def verificar_ponto(self, event):
+        pass
     
 class Circulos(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -80,7 +82,8 @@ class Circulos(FigurA):
     def desenhar_incompleto(self, canvas):
         raio = ((self.coord[2] - self.coord[0])**2 + (self.coord[3]- self.coord[1])**2)**0.5
         canvas.create_oval(self.coord[0]-raio, self.coord[1]-raio, self.coord[0]+raio, self.coord[1]+raio, outline= self.cordefora, fill=self.cordedentro,dash=(4,4), stipple="gray75")
-
+    def verificar_ponto(self, event):
+        pass    
 class Retangulo(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
         self.coord = [event.x, event.y, event.x, event.y]
@@ -123,7 +126,8 @@ class Oval(FigurA):
 
     def desenhar_incompleto(self, canvas):
         canvas.create_oval(self.coord, fill=self.cordedentro,outline=self.cordefora, dash=(4,4), stipple="gray75")
-
+    def verificar_ponto(self, event):
+        pass
 class Poligonos(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
         self.coord = [event.x, event.y, event.x, event.y]
@@ -143,3 +147,5 @@ class Poligonos(FigurA):
 
     def desenhar_incompleto(self, canvas):
         canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro ,dash=(4,4), stipple="gray75")
+    def verificar_ponto(self, event):
+        pass
