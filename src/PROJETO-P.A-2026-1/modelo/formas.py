@@ -36,6 +36,7 @@ class Linha(FigurA):
     def __init__(self, event, cordeoutline):
         self.coord = [event.x, event.y, event.x, event.y]
         self.cor = cordeoutline[1]
+        self.selecionado = False
 
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
@@ -46,12 +47,15 @@ class Linha(FigurA):
 
     def desenhar_incompleto(self, canvas):
         canvas.create_line(self.coord[0], self.coord[1], self.coord[2], self.coord[3], fill=self.cor, dash=(4,4))
+    def verificar_ponto(self, event):
+        pass
 
 class Rabisco(FigurA):
     def __init__(self, event, cordeoutline):
         self.coord = [(event.x, event.y)]
         self.cor = cordeoutline[1]
-    
+        self.selecionado = False
+
     def atualizar_figura_nova(self, event):
         self.coord.append((event.x, event.y))
     def desenhar(self, canvas):
@@ -65,7 +69,8 @@ class Circulos(FigurA):
         self.coord = [event.x, event.y, event.x, event.y]
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
-    
+        self.selecionado = False
+
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
         self.coord[3] = event.y
@@ -82,7 +87,7 @@ class Retangulo(FigurA):
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
         self.selecionado = False
-
+        
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
         self.coord[3] = event.y
@@ -108,6 +113,7 @@ class Oval(FigurA):
         self.coord = [event.x, event.y, event.x, event.y]
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
+        self.selecionado = False
 
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
@@ -123,6 +129,7 @@ class Poligonos(FigurA):
         self.coord = [event.x, event.y, event.x, event.y]
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
+        self.selecionado = False
 
     def atualizar_figura_nova(self, event):
         self.coord[-2] = event.x
