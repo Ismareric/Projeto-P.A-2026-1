@@ -5,6 +5,7 @@ import pickle
 class Figuras:
     def __init__(self):
         self.figuras = []
+        self.indice_selecionado=None
 
     def salvar_arquivo(self, caminho):
         with open(caminho, 'wb') as arquivo:
@@ -13,8 +14,32 @@ class Figuras:
     def abrir_arquivo(self, caminho):
         with open(caminho, 'rb') as arquivo:
             self.figuras = pickle.load(arquivo)
-
-
+    def procurar_figura(self,event):
+        index=len(self.figuras)-1
+        while index>=0:
+            if self.figuras[index].verificar_ponto(event):
+                for i in self.figuras:
+                        i.selecionado=False
+                self.indice_selecionado = index
+                self.figuras[index].selecionado=True
+                return
+            else :
+                if self.indice_selecionado!=None:
+                    for i in self.figuras:
+                        i.selecionado=False
+                    #self.modelo.figuras[self.indice_selecionado].selecionado=False
+                    self.indice_selecionado=None
+            index-=1
+    def subirum(self,event): #mover para o modelo
+        print(self.figuras)
+        if self.indice_selecionado!=None and self.indice_selecionado>0:
+            self.figuras[self.indice_selecionado],self.figuras[self.indice_selecionado-1]=self.figuras[self.indice_selecionado-1],self.figuras[self.indice_selecionado]
+            print(self.figuras)
+    def descerum(self,event): #mover para o modelo 
+        print(self.figuras)
+        if self.indice_selecionado!=None and self.indice_selecionado<len(self.figuras):
+            self.figuras[self.indice_selecionado],self.figuras[self.indice_selecionado+1]=self.figuras[self.indice_selecionado+1],self.figuras[self.indice_selecionado-1]
+            print(self.figuras)
 class FigurA(ABC):
     @abstractmethod
     def atualizar_figura_nova(self, event):
