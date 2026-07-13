@@ -14,19 +14,20 @@ class Figuras:
     def abrir_arquivo(self, caminho):
         with open(caminho, 'rb') as arquivo:
             self.figuras = pickle.load(arquivo)
+    def removerselecionados(self):
+        for i in self.figuras:
+                        i.selecionado=False
     def procurar_figura(self,event):
         index=len(self.figuras)-1
         while index>=0:
             if self.figuras[index].verificar_ponto(event):
-                for i in self.figuras:
-                        i.selecionado=False
+                self.removerselecionados()
                 self.indice_selecionado = index
                 self.figuras[index].selecionado=True
                 return
             else :
                 if self.indice_selecionado!=None:
-                    for i in self.figuras:
-                        i.selecionado=False
+                    self.removerselecionados()
                     #self.modelo.figuras[self.indice_selecionado].selecionado=False
                     self.indice_selecionado=None
             index-=1
@@ -155,22 +156,49 @@ class Oval(FigurA):
         pass
 class Poligonos(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
-        self.coord = [event.x, event.y, event.x, event.y]
+        self.coord = [(event.x, event.y), (event.x, event.y)]
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
         self.selecionado = False
 
     def atualizar_figura_nova(self, event):
-        self.coord[-2] = event.x
-        self.coord[-1] = event.y
+        self.coord[-1] = (event.x,event.y)
 
     def adicionar_ponto(self, event):
-        self.coord.append(event.x)
-        self.coord.append(event.y)
+        self.coord.append((event.x,event.y))
     def desenhar(self, canvas):
+        print(self.coord)
         canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro )
 
     def desenhar_incompleto(self, canvas):
         canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro ,dash=(4,4), stipple="gray75")
     def verificar_ponto(self, event):
-        pass
+        x,y=event.x,event.y
+        dentro = False
+        n = len(self.coord)
+
+        # Se o polígono não tiver pelo menos 3 vértices, não é um polígono válido
+        if n < 3:
+            return dentro
+
+        # Inicializa o último vértice do polígono como ponto de partida
+        p1x, p1y = self.coord[0]
+
+        for i in range(n + 1):
+            # Avança para o próximo vértice
+            p2x, p2y = self.coord[i % n]
+
+            # Verifica se o raio horizontal intercepta a aresta do polígono
+            if y > min(p1y, p2y):
+                if y <= max(p1y, p2y):
+                    if x <= max(p1x, p2x):
+                        # Calcula a interceptação X exata da aresta
+                        if p1y != p2y:
+                            x_interceptado = (y - p1y) * (p2x - p1x) / (p2y - p1y) + p1x
+                        # Se o ponto estiver à esquerda da interceptação, inverte o estado
+                        if p1x == p2x or x <= x_interceptado:
+                            dentro = not dentro
+
+            p1x, p1y = p2x, p2y
+
+        return dentro

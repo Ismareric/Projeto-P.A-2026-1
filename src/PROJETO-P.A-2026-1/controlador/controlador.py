@@ -61,6 +61,7 @@ class PaintControler: #Classe chamada pela Main
         self.estado_atual = self.ferramentas[nome_ferramenta]
         
         self.fig_nova = None
+        self.modelo.removerselecionados()
         self.visao.desenhar_todas(self.modelo.figuras)
 
     def executar(self): # Chamda pela Main
@@ -70,7 +71,9 @@ class PaintControler: #Classe chamada pela Main
         if isinstance(figura, Rabisco):
             return len(figura.coord)>1
         if isinstance(figura, Poligonos):
-            return len(figura.coord) >= 6
+            if len(figura.coord) >= 1:
+                print('oba')
+                return True
         else :
             return (figura.coord[0] != figura.coord[2]) and (figura.coord[1]!=figura.coord[3])
     
