@@ -120,8 +120,15 @@ class PaintControler: #Classe chamada pela Main
             self.visao.desenhar_todas(self.modelo.figuras)
 
     def remover_preenchimento(self):
-        self.cordepreenchimento = (None, '') 
-        self.visao.alterarcoresdprenchimento.config(bg="#d9d9d9")
+
+        if isinstance(self.estado_atual, EstadoSeleçao):
+            self.modelo.alterar_cor_de_dentro((None, ''))
+            self.visao.desenhar_todas(self.modelo.figuras)
+
+        else :
+
+            self.cordepreenchimento = (None, '') 
+            self.visao.alterarcoresdprenchimento.config(bg="#d9d9d9")
     
     def procurar_figuranomodelo(self, event): #mover para o modelo
         self.modelo.procurar_figura(event)
