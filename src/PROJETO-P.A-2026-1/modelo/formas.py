@@ -2,11 +2,13 @@ from abc import ABC, abstractmethod
 from tkinter import *
 import pickle
 import math
+import copy
 #Apenas guarda as informações referentes às figuras
 class Figuras:
     def __init__(self):
         self.figuras = []
         self.indice_selecionado=None
+        self.objetoscopiados=None
 
     def salvar_arquivo(self, caminho):
         with open(caminho, 'wb') as arquivo:
@@ -62,6 +64,15 @@ class Figuras:
             self.figuras.pop(self.indice_selecionado)
 
             self.indice_selecionado = None
+    def copiar(self):
+        if self.indice_selecionado!=None:
+            self.objetoscopiados=copy.deepcopy(self.figuras[self.indice_selecionado])
+            self.objetoscopiados.selecionado=False
+    def colar(self,event):
+        objetocolado=copy.deepcopy(self.objetoscopiados)
+        objetocolado.modificarposicao(event)
+        self.figuras.append(objetocolado)
+        print(self.figuras)
     
     def alterar_cor_de_dentro(self, cor):
         self.figuras[self.indice_selecionado].cordedentro = cor[1]
@@ -86,7 +97,9 @@ class FigurA(ABC):
     @abstractmethod
     def verificar_ponto(self, event):
         pass
-    
+    @abstractmethod
+    def modificarposicao(self,event):
+        pass
     # distancia entre o segmento ((x1,y1), (x2,y2)) e o ponto (px, py)
     def distancia(self, x1, y1, x2, y2, px, py) :
         # Vetor direção do segmento (AB)
@@ -140,15 +153,18 @@ class Linha(FigurA):
             return True
         else :
             return False
+    def modificarposicao(self,event):
+        dis_horizontal,dis_vertial=event.x-self.coord[0],event.y-self.coord[1]
+        self.coord=[self.coord[0]+dis_horizontal,self.coord[1]+dis_vertial,self.coord[2]+dis_horizontal,self.coord[3]+dis_vertial]
 
 class Rabisco(FigurA):
     def __init__(self, event, cordeoutline):
-        self.coord = [(event.x, event.y)]
+        self.coord = [[event.x, event.y]]
         self.cordefora = cordeoutline[1]
         self.selecionado = False
 
     def atualizar_figura_nova(self, event):
-        self.coord.append((event.x, event.y))
+        self.coord.append([event.x, event.y])
     def desenhar(self, canvas):
         canvas.create_line(self.coord, fill=self.cordefora)
 
@@ -166,6 +182,11 @@ class Rabisco(FigurA):
                 return True
         
         return False
+    def modificarposicao(self,event):
+        dis_horizontal,dis_vertial=event.x-self.coord[0][0],event.y-self.coord[0][1]
+        for i in self.coord:
+            i[0]+=dis_horizontal
+            i[1]+=dis_vertial
 
     
 class Circulos(FigurA):
@@ -192,7 +213,9 @@ class Circulos(FigurA):
             return True
         else :
             return False
-        
+    def modificarposicao(self,event):
+        dis_horizontal,dis_vertial=event.x-self.coord[0],event.y-self.coord[1]
+        self.coord=[self.coord[0]+dis_horizontal,self.coord[1]+dis_vertial,self.coord[2]+dis_horizontal,self.coord[3]+dis_vertial]
           
 class Retangulo(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -219,7 +242,9 @@ class Retangulo(FigurA):
 
         else :
             return False
-        
+    def modificarposicao(self,event):
+        dis_horizontal,dis_vertial=event.x-self.coord[0],event.y-self.coord[1]
+        self.coord=[self.coord[0]+dis_horizontal,self.coord[1]+dis_vertial,self.coord[2]+dis_horizontal,self.coord[3]+dis_vertial]
 
 class Oval(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -248,21 +273,23 @@ class Oval(FigurA):
             return True
         else: 
             return False
+    def modificarposicao(self,event):
+        dis_horizontal,dis_vertial=event.x-self.coord[0],event.y-self.coord[1]
+        self.coord=[self.coord[0]+dis_horizontal,self.coord[1]+dis_vertial,self.coord[2]+dis_horizontal,self.coord[3]+dis_vertial]
 
 class Poligonos(FigurA):
     def __init__(self, event, cordeoutline, cordeprenchimento):
-        self.coord = [(event.x, event.y), (event.x, event.y)]
+        self.coord = [[event.x, event.y], [event.x, event.y]]
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
         self.selecionado = False
 
     def atualizar_figura_nova(self, event):
-        self.coord[-1] = (event.x,event.y)
+        self.coord[-1] = [event.x,event.y]
 
     def adicionar_ponto(self, event):
-        self.coord.append((event.x,event.y))
+        self.coord.append([event.x,event.y])
     def desenhar(self, canvas):
-        print(self.coord)
         canvas.create_polygon(self.coord, outline=self.cordefora, fill= self.cordedentro )
 
     def desenhar_incompleto(self, canvas):
@@ -297,3 +324,8 @@ class Poligonos(FigurA):
             p1x, p1y = p2x, p2y
 
         return dentro
+    def modificarposicao(self,event):
+        dis_horizontal,dis_vertial=event.x-self.coord[0][0],event.y-self.coord[0][1]
+        for i in self.coord:
+            i[0]+=dis_horizontal
+            i[1]+=dis_vertial

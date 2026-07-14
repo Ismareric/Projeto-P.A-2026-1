@@ -9,4 +9,4 @@ def main():
     controlador.executar()
 
 
-main()
+main() 

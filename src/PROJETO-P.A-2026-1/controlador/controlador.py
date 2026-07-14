@@ -153,7 +153,11 @@ class PaintControler: #Classe chamada pela Main
     def apagar(self, event):
         self.modelo.apagar(event)
         self.visao.desenhar_todas(self.modelo.figuras)
-   
+    def copiarnomodelo(self,event):
+        self.modelo.copiar()
+    def colarnomodelo(self,event):
+        self.modelo.colar(event)
+        self.visao.desenhar_todas(self.modelo.figuras)
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
         self.visao.desenho.bind('<B1-Motion>', self.modificar_coordenadas) 
@@ -164,4 +168,5 @@ class PaintControler: #Classe chamada pela Main
         self.visao.janela.bind('<Up>', self.subirtudomodelo)
         self.visao.janela.bind('<Down>', self.descertudomodelo)
         self.visao.janela.bind("<Delete>", self.apagar)
-        
+        self.visao.janela.bind("<Control-c>", self.copiarnomodelo)
+        self.visao.janela.bind("<Control-v>", self.colarnomodelo)
