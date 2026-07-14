@@ -121,6 +121,6 @@ class EstadoSeleçao(EstadoFerramenta):
     def ao_clicar(self, controlador, event):
         controlador.procurar_figuranomodelo(event)
     def ao_arrastar(self, controlador, event):
-        pass
+        controlador.moverfigura(event)
     def ao_soltar(self, controlador, event):
         pass

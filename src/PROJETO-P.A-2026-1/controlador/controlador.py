@@ -158,6 +158,9 @@ class PaintControler: #Classe chamada pela Main
     def colarnomodelo(self,event):
         self.modelo.colar(event)
         self.visao.desenhar_todas(self.modelo.figuras)
+    def moverfigura(self,event):
+        self.modelo.moverselecionado(event)
+        self.visao.desenhar_todas(self.modelo.figuras)
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
         self.visao.desenho.bind('<B1-Motion>', self.modificar_coordenadas) 

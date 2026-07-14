@@ -73,7 +73,9 @@ class Figuras:
         objetocolado.modificarposicao(event)
         self.figuras.append(objetocolado)
         print(self.figuras)
-    
+    def moverselecionado(self,event):
+        if self.indice_selecionado!= None:
+            self.figuras[self.indice_selecionado].modificarposicao(event)
     def alterar_cor_de_dentro(self, cor):
         self.figuras[self.indice_selecionado].cordedentro = cor[1]
 
