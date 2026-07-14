@@ -77,10 +77,12 @@ class Figuras:
         if self.indice_selecionado!= None:
             self.figuras[self.indice_selecionado].modificarposicao(event)
     def alterar_cor_de_dentro(self, cor):
-        self.figuras[self.indice_selecionado].cordedentro = cor[1]
+        if  self.indice_selecionado !=None:
+            self.figuras[self.indice_selecionado].cordedentro = cor[1]
 
     def alterar_cor_de_fora(self, cor):
-        self.figuras[self.indice_selecionado].cordefora = cor[1]
+        if  self.indice_selecionado !=None:
+            self.figuras[self.indice_selecionado].cordefora = cor[1]
 
 
 class FigurA(ABC):
