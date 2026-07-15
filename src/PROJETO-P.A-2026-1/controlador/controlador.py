@@ -24,6 +24,7 @@ class PaintControler: #Classe chamada pela Main
         self.cordeoutline = (None, "#000000")
         self.cordepreenchimento = (None, '')
         self.fig_nova = None
+        self.ctrl=False
         self.rastrear_mouse()
         self.visao.alterarcoresdeoutline.config(command=self.mudarcordeoutline)
         self.visao.alterarcoresdprenchimento.config(command=self.mudarcordepreenchimento)
@@ -132,7 +133,7 @@ class PaintControler: #Classe chamada pela Main
             self.visao.alterarcoresdprenchimento.config(bg="#d9d9d9")
     
     def procurar_figuranomodelo(self, event): #mover para o modelo
-        self.modelo.procurar_figura(event)
+        self.modelo.procurar_figura(event, self.ctrl)
         self.visao.desenhar_todas(self.modelo.figuras)
     
     def subirumnomodelo(self,event): #mover para o modelo
@@ -170,6 +171,12 @@ class PaintControler: #Classe chamada pela Main
 
         self.modelo.moverselecionado(event)
         self.visao.desenhar_todas(self.modelo.figuras)
+
+
+    def controlpress(self,event):
+        self.ctrl=True        
+    def controlrelease(self,event):
+        self.ctrl=False
         
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
@@ -183,3 +190,5 @@ class PaintControler: #Classe chamada pela Main
         self.visao.janela.bind("<Delete>", self.apagar)
         self.visao.janela.bind("<Control-c>", self.copiarnomodelo)
         self.visao.janela.bind("<Control-v>", self.colarnomodelo)
+        self.visao.janela.bind("<KeyPress-Control_L>", self.controlpress)
+        self.visao.janela.bind("<KeyRelease-Control_L>", self.controlrelease)

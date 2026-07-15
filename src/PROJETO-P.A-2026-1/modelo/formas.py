@@ -7,7 +7,7 @@ import copy
 class Figuras:
     def __init__(self):
         self.figuras = []
-        self.indice_selecionado=None
+        self.indice_selecionado=[]
         self.objetoscopiados=None
 
     def salvar_arquivo(self, caminho):
@@ -20,19 +20,20 @@ class Figuras:
     def removerselecionados(self):
         for i in self.figuras:
                         i.selecionado=False
-    def procurar_figura(self,event):
+    def procurar_figura(self,event,ctrl):
         index=len(self.figuras)-1
         while index>=0:
             if self.figuras[index].verificar_ponto(event):
-                self.removerselecionados()
-                self.indice_selecionado = index
+                if not ctrl:
+                    self.removerselecionados()
+                self.indice_selecionado.append(index)
                 self.figuras[index].selecionado=True
                 return
             else :
-                if self.indice_selecionado!=None:
-                    self.removerselecionados()
-                    #self.modelo.figuras[self.indice_selecionado].selecionado=False
-                    self.indice_selecionado=None
+                if self.indice_selecionado!=[]:
+                    if not ctrl:
+                        self.removerselecionados()
+                        self.indice_selecionado=[]
             index-=1
 
     def subirum(self,event): #mover para o modelo
@@ -60,32 +61,40 @@ class Figuras:
             self.indice_selecionado = 0
     
     def apagar(self, event):
-        if self.indice_selecionado != None :
-            self.figuras.pop(self.indice_selecionado)
+        if self.indice_selecionado != [] : 
+            for i in self.indice_selecionado:
+                self.figuras.pop(i)
 
-            self.indice_selecionado = None
+            self.indice_selecionado = []
 
     def apagartudo(self):
         self.figuras = []
+
     def copiar(self):
-        if self.indice_selecionado!=None:
-            self.objetoscopiados=copy.deepcopy(self.figuras[self.indice_selecionado])
-            self.objetoscopiados.selecionado=False
+        self.objetoscopiados = []
+        if self.indice_selecionado!=[]:
+            for i in self.indice_selecionado:
+                self.objetoscopiados.append(copy.deepcopy(self.figuras[i]))
+                self.objetoscopiados[i].selecionado=False
     def colar(self,event):
-        objetocolado=copy.deepcopy(self.objetoscopiados)
-        objetocolado.modificarposicao(event)
-        self.figuras.append(objetocolado)
+        objetoscolados=copy.deepcopy(self.objetoscopiados)
+        print(objetoscolados)
+        for i in objetoscolados:
+            i.modificarposicao(event)
+        self.figuras.extend(objetoscolados)
         print(self.figuras)
     def moverselecionado(self,event):
-        if self.indice_selecionado!= None:
+        if self.indice_selecionado!= []:
             self.figuras[self.indice_selecionado].modificarposicao(event)
     def alterar_cor_de_dentro(self, cor):
-        if  self.indice_selecionado !=None:
-            self.figuras[self.indice_selecionado].cordedentro = cor[1]
+        if  self.indice_selecionado !=[]:
+            for i in self.indice_selecionado:
+                self.figuras[i].cordedentro = cor[1]
 
     def alterar_cor_de_fora(self, cor):
-        if  self.indice_selecionado !=None:
-            self.figuras[self.indice_selecionado].cordefora = cor[1]
+        if  self.indice_selecionado !=[]:
+            for i in self.indice_selecionado:
+                self.figuras[i].cordefora = cor[1]
 
 
 class FigurA(ABC):

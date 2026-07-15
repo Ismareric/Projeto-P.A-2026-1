@@ -12,6 +12,8 @@ class EstadoFerramenta(ABC):
     def ao_soltar(self, controlador, event):
         pass
     
+    def ao_clicar_ctrl(self, controlador, event):
+        pass
 
 
 class EstadoLinha(EstadoFerramenta):
@@ -120,7 +122,9 @@ class EstadoPoligono(EstadoFerramenta):
 class EstadoSeleçao(EstadoFerramenta):
     def ao_clicar(self, controlador, event):
         controlador.procurar_figuranomodelo(event)
+        
     def ao_arrastar(self, controlador, event):
         controlador.moverfigura(event)
+
     def ao_soltar(self, controlador, event):
         pass
