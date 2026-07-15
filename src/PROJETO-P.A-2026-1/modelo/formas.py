@@ -64,6 +64,9 @@ class Figuras:
             self.figuras.pop(self.indice_selecionado)
 
             self.indice_selecionado = None
+
+    def apagartudo(self):
+        self.figuras = []
     def copiar(self):
         if self.indice_selecionado!=None:
             self.objetoscopiados=copy.deepcopy(self.figuras[self.indice_selecionado])
