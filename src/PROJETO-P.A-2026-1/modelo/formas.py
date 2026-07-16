@@ -24,6 +24,7 @@ class Figuras:
         index=len(self.figuras)-1
         while index>=0:
             if self.figuras[index].verificar_ponto(event):
+                self.pi = (event.x, event.y)
                 if not ctrl:
                     self.removerselecionados()
                 self.indice_selecionado.append(index)
@@ -62,8 +63,12 @@ class Figuras:
     
     def apagar(self, event):
         if self.indice_selecionado != [] : 
-            for i in self.indice_selecionado:
-                self.figuras.pop(i)
+            objetosdeletados=[]
+            for obj in self.figuras:
+                if obj.selecionado==True:
+                    objetosdeletados.append(obj)
+            for i in objetosdeletados:
+                self.figuras.remove(i)
 
             self.indice_selecionado = []
 
@@ -76,6 +81,7 @@ class Figuras:
             for i in self.indice_selecionado:
                 self.objetoscopiados.append(copy.deepcopy(self.figuras[i]))
                 self.objetoscopiados[i].selecionado=False
+    
     def colar(self,event):
         objetoscolados=copy.deepcopy(self.objetoscopiados)
         print(objetoscolados)
@@ -83,9 +89,12 @@ class Figuras:
             i.modificarposicao(event)
         self.figuras.extend(objetoscolados)
         print(self.figuras)
-    def moverselecionado(self,event):
+    
+    def moverselecionado(self,event, pi):
         if self.indice_selecionado!= []:
-            self.figuras[self.indice_selecionado].modificarposicao(event)
+            for i in self. indice_selecionado:
+                self.figuras[i].modificarposicao(event, pi)
+    
     def alterar_cor_de_dentro(self, cor):
         if  self.indice_selecionado !=[]:
             for i in self.indice_selecionado:
@@ -169,9 +178,10 @@ class Linha(FigurA):
             return True
         else :
             return False
-    def modificarposicao(self,event):
-        dis_horizontal,dis_vertial=event.x-self.coord[0],event.y-self.coord[1]
-        self.coord=[self.coord[0]+dis_horizontal,self.coord[1]+dis_vertial,self.coord[2]+dis_horizontal,self.coord[3]+dis_vertial]
+    def modificarposicao(self,event, pi):
+        dis_horizontal,dis_vertial=event.x-pi[0],event.y-pi[1]
+        print(dis_horizontal, dis_vertial)
+        self.coord=[self.coord[0]-dis_horizontal,self.coord[1]+dis_vertial,self.coord[2]+dis_horizontal,self.coord[3]-dis_vertial]
 
 class Rabisco(FigurA):
     def __init__(self, event, cordeoutline):

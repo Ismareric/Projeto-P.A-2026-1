@@ -169,7 +169,7 @@ class PaintControler: #Classe chamada pela Main
     
     def moverfigura(self,event):
 
-        self.modelo.moverselecionado(event)
+        self.modelo.moverselecionado(event, self.modelo.pi)
         self.visao.desenhar_todas(self.modelo.figuras)
 
 
