@@ -6,9 +6,11 @@ from tkinter import filedialog
 
 class PaintControler: #Classe chamada pela Main
     def __init__(self):
+        #Inicia modelo e visão
         self.modelo = Figuras()
         self.visao= PaintView()
 
+        #Dicionário de Ferramentas
         self.ferramentas = {
             "Linha" : EstadoLinha(),
             "Rabisco" : EstadoRabisco(),
@@ -19,13 +21,23 @@ class PaintControler: #Classe chamada pela Main
             'Seleção' : EstadoSeleçao()
         }
 
+        #Estado/Feerramenta atual
         self.estado_atual = self.ferramentas["Linha"]
 
+        #Define as cores padrão
         self.cordeoutline = (None, "#000000")
         self.cordepreenchimento = (None, '')
+
+        #Figura que está sendo desenhada
         self.fig_nova = None
+
+        #É verdadeiro quando o ctrl é pressionado
         self.ctrl=False
+
+        #Monitora o mouse e o teclado
         self.rastrear_mouse()
+        
+        #Adiciona o comando aos botões da interface
         self.visao.alterarcoresdeoutline.config(command=self.mudarcordeoutline)
         self.visao.alterarcoresdprenchimento.config(command=self.mudarcordepreenchimento)
         self.visao.semprenchimento.config(command=self.remover_preenchimento)
@@ -33,8 +45,10 @@ class PaintControler: #Classe chamada pela Main
         self.visao.salvar.config(command=self.salvar)
         self.visao.abrir.config(command= self.abrir)
 
+        #Chama a função de mudar ferramenta toda vez que a StringVar associada ao Opition Menu é alterada
         self.visao.formato.trace_add("write", self.mudar_ferramenta)
-
+    
+    #Ao apertar o botão de salvar, abre uma caixa de dialogo do sist para copiar o caminho de onde o arquivo será salvo
     def salvar(self):
         caminho = filedialog.asksaveasfilename(
             title= 'Salvar o Desenho',
@@ -43,9 +57,11 @@ class PaintControler: #Classe chamada pela Main
             initialdir= "/home/luis/Projeto/Projeto-P.A-2026-1/src/PROJETO-P.A-2026-1/Desenhos Salvos"
         )
 
+        #Salva os desenhos no local selecionando
         if caminho:
             self.modelo.salvar_arquivo(caminho)
 
+    #Ao apertar o botão de salvar, abre uma caixa de dialogo do sist para copiar o caminho de onde o arquivo a ser abrido está
     def abrir(self):
         caminho = filedialog.askopenfilename(
             title="Abrir Desenho",
@@ -57,59 +73,74 @@ class PaintControler: #Classe chamada pela Main
             self.modelo.abrir_arquivo(caminho)
             self.visao.desenhar_todas(self.modelo.figuras)
     
+    #Troca o estado atual
     def mudar_ferramenta(self, *args):
+        #Verifica a ferramenta selecionanda no OptionMenu
         nome_ferramenta = self.visao.formato.get()
 
+        #Muda para o estado correspondente no dicionário
         self.estado_atual = self.ferramentas[nome_ferramenta]
         
+        #Se houver uma figura incompleta sendo desenhada apaga
         self.fig_nova = None
+        #Se houver figuras selecionadas, desceleciona
         self.modelo.removerselecionados()
+        #Desenha tudo para aplicar as modificações anteriores
         self.visao.desenhar_todas(self.modelo.figuras)
 
-    def executar(self): # Chamda pela Main
+    # Chamda pela Main para iniciar o loop da interface
+    def executar(self): 
         self.visao.iniciar_loop()
     
+    #Verifica se a Figura que está sendo desenhada possui coord final e inicial diferentes
     def incompleta(self, figura):
         if isinstance(figura, Rabisco):
             return len(figura.coord)>1
         if isinstance(figura, Poligonos):
             if len(figura.coord) >= 1:
-                print('oba')
                 return True
         else :
             return (figura.coord[0] != figura.coord[2]) and (figura.coord[1]!=figura.coord[3])
     
+    #Muda a cor atual
     def mudarcordeoutline(self):
         cor_escolhida = self.visao.abrir_seletor_de_cor()
 
-        if isinstance(self.estado_atual, EstadoSeleçao):
+        if isinstance(self.estado_atual, EstadoSeleçao): #Se estiver no modo de seleção, chama a função que altera a cor de figuras existentes
             self.modelo.alterar_cor_de_fora(cor_escolhida)
             self.visao.desenhar_todas(self.modelo.figuras)
 
-        if cor_escolhida != (None, None):
+        if cor_escolhida != (None, None): #Verifica se uma cor foi escolhida e altera-a
             self.cordeoutline = cor_escolhida
             self.visao.alterarcoresdeoutline.config(bg=cor_escolhida[1])
-
     def mudarcordepreenchimento(self): 
         cor_escolhida = self.visao.abrir_seletor_de_cor()
 
-        if isinstance(self.estado_atual, EstadoSeleçao):
+        if isinstance(self.estado_atual, EstadoSeleçao): #Se estiver no modo de seleção, chama a função que altera a cor de figuras existentes
             self.modelo.alterar_cor_de_dentro(cor_escolhida)
             self.visao.desenhar_todas(self.modelo.figuras)
 
         
-        if cor_escolhida != (None, None):
+        if cor_escolhida != (None, None): #Verifica se uma cor foi escolhida e altera-a
             self.cordepreenchimento = cor_escolhida
             self.visao.alterarcoresdprenchimento.config(bg=cor_escolhida[1])
 
+    #Chamada ao clicar com o botão esquerdo, executa a função do estado atual
     def criar_objeto(self, event): 
         
        self.estado_atual.ao_clicar(self, event)
 
     
     def modificar_coordenadas(self, event):
-       
-       self.estado_atual.ao_arrastar(self, event)
+        if isinstance(self.estado_atual, EstadoSeleçao):
+            if self.modelo.indice_selecionado != []:
+                self.estado_atual.ao_arrastar(self, event, selecionado=False)
+            
+            else :
+                self.estado_atual.ao_arrastar(self, event, selecionado=True)
+        
+        else :
+            self.estado_atual.ao_arrastar(self, event)
 
     def incluir_figura_nova(self, event):
         self.estado_atual.ao_soltar(self, event)
@@ -133,8 +164,13 @@ class PaintControler: #Classe chamada pela Main
             self.visao.alterarcoresdprenchimento.config(bg="#d9d9d9")
     
     def procurar_figuranomodelo(self, event): #mover para o modelo
+        self.ultimo_x = event.x
+        self.ultimo_y = event.y
         self.modelo.procurar_figura(event, self.ctrl)
         self.visao.desenhar_todas(self.modelo.figuras)
+
+    def figuras_contidas(self, coord):
+        self.modelo.procurar_figuras(coord)
     
     def subirumnomodelo(self,event): #mover para o modelo
         self.modelo.subirum(event)
@@ -169,8 +205,20 @@ class PaintControler: #Classe chamada pela Main
     
     def moverfigura(self,event):
 
-        self.modelo.moverselecionado(event, self.modelo.pi)
-        self.visao.desenhar_todas(self.modelo.figuras)
+        if self.modelo.indice_selecionado is not None:
+            dx = event.x - self.ultimo_x
+            dy = event.y - self.ultimo_y
+            for i in self.modelo.indice_selecionado:
+                figura_selecionada = self.modelo.figuras[i]
+                figura_selecionada.modificarposicao(dx, dy)
+            
+            
+            self.ultimo_x = event.x
+            self.ultimo_y = event.y
+        
+    
+            self.visao.desenhar_todas(self.modelo.figuras)
+        
 
 
     def controlpress(self,event):

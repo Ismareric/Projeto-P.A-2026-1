@@ -121,10 +121,16 @@ class EstadoPoligono(EstadoFerramenta):
 
 class EstadoSeleçao(EstadoFerramenta):
     def ao_clicar(self, controlador, event):
+        self.selecao = Selecao(event)
         controlador.procurar_figuranomodelo(event)
         
-    def ao_arrastar(self, controlador, event):
+    def ao_arrastar(self, controlador, event, selecionado=False):
         controlador.moverfigura(event)
+        if selecionado:
+            self.selecao.atualizar_figura_nova(event)
+            controlador.visao.desenhar_incompleto(self.selecao)
 
     def ao_soltar(self, controlador, event):
-        pass
+        if not controlador.incompleta(self.selecao):
+            controlador.figuras_contidas(self.selecao.coord)
+        controlador.visao.desenhar_todas(controlador.modelo.figuras)
