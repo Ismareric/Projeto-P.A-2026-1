@@ -53,35 +53,42 @@ class Figuras:
             self.removerselecionados()
             self.indice_selecionado = []
 
+
     def procurar_figuras(self, coord):
-        """ Função que deveria procurar as figuras dentro do quadrado de seleção"""
-        pass
+        for i in range(len(self.figuras)):
+            if self.figuras[i].procurar_figuras_multiplas(coord):
+                self.indice_selecionado.append(i)
+                self.figuras[i].selecionado=True
+                
 
     #trocar layer       
     def subirum(self,event): 
-        if self.indice_selecionado!=None and self.indice_selecionado<len(self.figuras)-1:
-            self.figuras[self.indice_selecionado],self.figuras[self.indice_selecionado+1]=self.figuras[self.indice_selecionado+1],self.figuras[self.indice_selecionado]
-            self.indice_selecionado += 1
+        for i in range(len(self.indice_selecionado)):
+            if self.indice_selecionado[i]<len(self.figuras)-1:
+                self.figuras[self.indice_selecionado[i]],self.figuras[self.indice_selecionado[i]+1]=self.figuras[self.indice_selecionado[i]+1],self.figuras[self.indice_selecionado[i]]
+                self.indice_selecionado[i] += 1
     
-    def descerum(self,event): 
-        if self.indice_selecionado!=None and self.indice_selecionado>0:
-            self.figuras[self.indice_selecionado],self.figuras[self.indice_selecionado-1]=self.figuras[self.indice_selecionado-1],self.figuras[self.indice_selecionado]
-            self.indice_selecionado -= 1
+    def descerum(self,event):
+        for i in range(len(self.indice_selecionado)): 
+            self.figuras[self.indice_selecionado[i]],self.figuras[self.indice_selecionado[i]-1]=self.figuras[self.indice_selecionado[i]-1],self.figuras[self.indice_selecionado[i]]
+            self.indice_selecionado[i] -= 1
 
     def subirtudo(self, event):
-        if self.indice_selecionado!=None and self.indice_selecionado<len(self.figuras)-1:
-            figura = self.figuras.pop(self.indice_selecionado)
-            self.figuras.append(figura)
+        for i in range(len(self.indice_selecionado)):
+            if self.indice_selecionado[i]<len(self.figuras)-1:
+                figura = self.figuras.pop(self.indice_selecionado[i])
+                self.figuras.append(figura)
 
-            self.indice_selecionado = len(self.figuras)-1
+                self.indice_selecionado[i] = len(self.figuras)-1
 
     def descertudo(self, event):
-        if self.indice_selecionado != None and self.indice_selecionado>0:
-            figura = self.figuras.pop(self.indice_selecionado)
-            self.figuras.insert(0, figura)
+        for i in range(len(self.indice_selecionado)):
+            if self.indice_selecionado[i]>0:
+                figura = self.figuras.pop(self.indice_selecionado[i])
+                self.figuras.insert(0, figura)
 
-            self.indice_selecionado = 0
-    
+                self.indice_selecionado[i] = 0
+        
     #Apaga as figuras selecionadas
     def apagar(self, event):
         if self.indice_selecionado != [] :  #Verifica se existe figura selecionada
@@ -99,6 +106,14 @@ class Figuras:
     #Apaga toda a lista de figuras
     def apagartudo(self):
         self.figuras = []
+
+    def agrupar(self):
+        listacomposta=[]
+        for i in self.figuras:
+            if i.selecionado:
+                listacomposta.append(i)
+        composto=Composto(listacomposta)
+        self.apagar('ai')
 
     def copiar(self):
         self.objetoscopiados = [] #Cria lista do objts copiados
@@ -145,7 +160,9 @@ class FigurA(ABC):
     def verificar_ponto(self, event):
         """Verifica se um ponto está contido na figura"""
         pass
-    
+    @abstractmethod
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        pass
     # Modifica a posição das figuras, selecionadas(Exeto Rabisco e Poligono)
     def modificarposicao(self, dx, dy):
         self.coord = [
@@ -156,7 +173,7 @@ class FigurA(ABC):
         ]   
 
     # distancia entre o segmento ((x1,y1), (x2,y2)) e o ponto (px, py)
-    #Serve para verificar se o usuário clicou proximo a uma linha ou rabisco
+    #Serve para verificar se o ufiguras_consuário clicou proximo a uma linha ou rabisco
     def distancia(self, x1, y1, x2, y2, px, py) :
         # Vetor direção do segmento (AB)
         dx = x2 - x1
@@ -211,7 +228,14 @@ class Linha(FigurA):
             return True
         else :
             return False
-    
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        if ((coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3])
+            or(coorddoretangulo[0]>=self.coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[1]>=coorddoretangulo[3])and(coorddoretangulo[0]>=self.coord[2]>=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[3]>=coorddoretangulo[3])
+            or(coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[1]>=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[3]>=coorddoretangulo[3])
+            or(coorddoretangulo[0]>=self.coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]>=self.coord[2]>=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3])):
+            return True
+        else:
+            return False
 
 class Rabisco(FigurA):
     #Cria o rabisco
@@ -244,7 +268,8 @@ class Rabisco(FigurA):
         for i in self.coord:
             i[0] += dx
             i[1] += dy
-
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        pass
     
 class Circulos(FigurA):
     #Cria o circulo
@@ -271,7 +296,11 @@ class Circulos(FigurA):
             return True
         else :
             return False
-    
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        if (coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3]):
+            return True
+        else:
+            return False
           
 class Retangulo(FigurA):
     #Cria o retangulo
@@ -299,7 +328,11 @@ class Retangulo(FigurA):
 
         else :
             return False
-    
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        if (coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3]):
+            return True
+        else:
+            return False
 
 class Oval(FigurA):
     #Cria o oval
@@ -329,7 +362,11 @@ class Oval(FigurA):
             return True
         else: 
             return False
-    
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        if (coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3]):
+            return True
+        else:
+            return False
 
 class Poligonos(FigurA):
     #CRia o poligono
@@ -383,6 +420,8 @@ class Poligonos(FigurA):
         for i in self.coord:
             i[0] += dx
             i[1] += dy
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        pass
 
 #Classe para criar o retangulo de seleçaõ (Incompleta)
 class Selecao(FigurA):
@@ -399,3 +438,5 @@ class Selecao(FigurA):
         canva.create_rectangle(self.coord, dash=(4,4))
     def verificar_ponto(self, event):
         return super().verificar_ponto(event)
+    def procurar_figuras_multiplas(self,coorddoretangulo):
+        pass

@@ -44,6 +44,7 @@ class PaintControler: #Classe chamada pela Main
         self.visao.apagartudo.config(command= self.apagartudo )
         self.visao.salvar.config(command=self.salvar)
         self.visao.abrir.config(command= self.abrir)
+        self.visao.agrupar.config(command= self.agruparnomodelo)
 
         #Chama a função de mudar ferramenta toda vez que a StringVar associada ao Opition Menu é alterada
         self.visao.formato.trace_add("write", self.mudar_ferramenta)
@@ -225,7 +226,9 @@ class PaintControler: #Classe chamada pela Main
         self.ctrl=True        
     def controlrelease(self,event):
         self.ctrl=False
-        
+    def agruparnomodelo(self):
+        self.modelo.agrupar()
+    
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
         self.visao.desenho.bind('<B1-Motion>', self.modificar_coordenadas) 

@@ -32,6 +32,7 @@ class PaintView: #Classe chamada pela Main
         self.alterarcoresdprenchimento=Button(self.frame)
         self.semprenchimento = Button(self.frame, text="Tirar Preenchimento")
         self.apagartudo = Button(self.frame, text="Apagar Tudo")
+        self.agrupar = Button(self.frame, text="Agrupar")
         texto2 = Label(self.frame, text="Cor da Linha:")
         texto3= Label(self.frame, text="Cor de Preenchimento:")
 
@@ -47,9 +48,10 @@ class PaintView: #Classe chamada pela Main
         self.alterarcoresdprenchimento.grid(column=5,row=0,sticky=W,**espacamento)
         self.semprenchimento.grid(column=6, row=0, sticky=W, **espacamento)
         self.apagartudo.grid(column= 10, row=0, sticky=W, **espacamento)
+        self.agrupar.grid(column= 11, row=0, sticky=W, **espacamento)
 
         self.desenho = Canvas(self.frame, bg='#ffffff')
-        self.desenho.grid(column=0, row=1, columnspan=11, **espacamento, sticky= 'nsew')
+        self.desenho.grid(column=0, row=1, columnspan=12, **espacamento, sticky= 'nsew')
 
         
 

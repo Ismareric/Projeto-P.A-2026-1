@@ -131,6 +131,6 @@ class EstadoSeleçao(EstadoFerramenta):
             controlador.visao.desenhar_incompleto(self.selecao)
 
     def ao_soltar(self, controlador, event):
-        if not controlador.incompleta(self.selecao):
+        if controlador.incompleta(self.selecao):
             controlador.figuras_contidas(self.selecao.coord)
         controlador.visao.desenhar_todas(controlador.modelo.figuras)
