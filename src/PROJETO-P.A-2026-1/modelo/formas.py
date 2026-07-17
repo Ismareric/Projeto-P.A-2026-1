@@ -61,7 +61,7 @@ class Figuras:
                 self.figuras[i].selecionado=True
                 
 
-    #trocar layer       
+    #trocar layer        
     def subirum(self,event): 
         for i in range(len(self.indice_selecionado)):
             if self.indice_selecionado[i]<len(self.figuras)-1:
@@ -102,7 +102,8 @@ class Figuras:
                 self.figuras.remove(i) #Apaga os objetos
 
             self.indice_selecionado = [] #Limpa a lista dos selecionado, pois, eles já foram apagados
-
+        print (self.indice_selecionado)
+        print(objetosdeletados)
     #Apaga toda a lista de figuras
     def apagartudo(self):
         self.figuras = []
@@ -111,9 +112,12 @@ class Figuras:
         listacomposta=[]
         for i in self.figuras:
             if i.selecionado:
-                listacomposta.append(i)
-        composto=Composto(listacomposta)
+                selecionado=copy.deepcopy(i)
+                listacomposta.append(selecionado)
+        composta=Composta(listacomposta)
         self.apagar('ai')
+        self.figuras.append(composta)
+        
 
     def copiar(self):
         self.objetoscopiados = [] #Cria lista do objts copiados
@@ -278,7 +282,7 @@ class Circulos(FigurA):
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
         self.selecionado = False
-
+ 
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
         self.coord[3] = event.y
@@ -378,7 +382,7 @@ class Poligonos(FigurA):
 
     def atualizar_figura_nova(self, event):
         self.coord[-1] = [event.x,event.y]
-
+ 
     def adicionar_ponto(self, event):
         self.coord.append([event.x,event.y])
     def desenhar(self, canvas):
@@ -422,7 +426,30 @@ class Poligonos(FigurA):
             i[1] += dy
     def procurar_figuras_multiplas(self,coorddoretangulo):
         pass
-
+class Composta(FigurA):
+    def __init__(self,figurasagrupadas):
+        self.figurasagrupadas=figurasagrupadas
+        self.selecionado=False
+        for i in self.figurasagrupadas:
+            i.selecionado=False
+        
+    def atualizar_figura_nova(self, event):
+        return super().atualizar_figura_nova(event)
+    def desenhar(self, canva):
+        for i in self.figurasagrupadas:
+            i.desenhar(canva)
+    def desenhar_incompleto(self, canva):
+        return super().desenhar_incompleto(canva)
+    def verificar_ponto(self, event):
+        for i in self.figurasagrupadas:
+            if i.verificar_ponto:
+                return True
+        return False
+    def modificarposicao(self, dx, dy):
+        pass
+    def procurar_figuras_multiplas(self, coorddoretangulo):
+        return super().procurar_figuras_multiplas(coorddoretangulo)
+    
 #Classe para criar o retangulo de seleçaõ (Incompleta)
 class Selecao(FigurA):
     def __init__(self, event):

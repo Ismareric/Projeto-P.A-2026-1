@@ -223,11 +223,13 @@ class PaintControler: #Classe chamada pela Main
 
 
     def controlpress(self,event):
-        self.ctrl=True        
+        self.ctrl=True 
+        print(self.modelo.figuras)       
     def controlrelease(self,event):
         self.ctrl=False
     def agruparnomodelo(self):
         self.modelo.agrupar()
+        self.visao.desenhar_todas(self.modelo.figuras)
     
     def rastrear_mouse(self): #É chamada no __init__
         self.visao.desenho.bind('<ButtonPress-1>', self.criar_objeto) 
