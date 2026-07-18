@@ -62,31 +62,38 @@ class Figuras:
 
     #trocar layer        
     def subirum(self,event): 
-        for i in range(len(self.indice_selecionado)):
-            if self.indice_selecionado[i]<len(self.figuras)-1:
-                self.figuras[self.indice_selecionado[i]],self.figuras[self.indice_selecionado[i]+1]=self.figuras[self.indice_selecionado[i]+1],self.figuras[self.indice_selecionado[i]]
-                self.indice_selecionado[i] += 1
+        if len(self.indice_selecionado)==1:
+            for i in range(len(self.indice_selecionado)):
+                if self.indice_selecionado[i]<len(self.figuras)-1:
+                    self.figuras[self.indice_selecionado[i]],self.figuras[self.indice_selecionado[i]+1]=self.figuras[self.indice_selecionado[i]+1],self.figuras[self.indice_selecionado[i]]
+                    self.indice_selecionado[i] += 1
+        
     
     def descerum(self,event):
-        for i in range(len(self.indice_selecionado)): 
-            self.figuras[self.indice_selecionado[i]],self.figuras[self.indice_selecionado[i]-1]=self.figuras[self.indice_selecionado[i]-1],self.figuras[self.indice_selecionado[i]]
-            self.indice_selecionado[i] -= 1
+        if len(self.indice_selecionado)==1:
+            for i in range(len(self.indice_selecionado)): 
+                self.figuras[self.indice_selecionado[i]],self.figuras[self.indice_selecionado[i]-1]=self.figuras[self.indice_selecionado[i]-1],self.figuras[self.indice_selecionado[i]]
+                self.indice_selecionado[i] -= 1
 
     def subirtudo(self, event):
-        for i in range(len(self.indice_selecionado)):
-            if self.indice_selecionado[i]<len(self.figuras)-1:
-                figura = self.figuras.pop(self.indice_selecionado[i])
-                self.figuras.append(figura)
+        if len(self.indice_selecionado)==1:
+            for i in range(len(self.indice_selecionado)):
+                if self.indice_selecionado[i]<len(self.figuras)-1:
+                    figura = self.figuras.pop(self.indice_selecionado[i])
+                    self.figuras.append(figura)
 
-                self.indice_selecionado[i] = len(self.figuras)-1
+                    self.indice_selecionado[i] = len(self.figuras)-1
+
 
     def descertudo(self, event):
-        for i in range(len(self.indice_selecionado)):
-            if self.indice_selecionado[i]>0:
-                figura = self.figuras.pop(self.indice_selecionado[i])
-                self.figuras.insert(0, figura)
+        if len(self.indice_selecionado)==1:
+            for i in range(len(self.indice_selecionado)):
+                if self.indice_selecionado[i]>0:
+                    figura = self.figuras.pop(self.indice_selecionado[i])
+                    self.figuras.insert(0, figura)
 
-                self.indice_selecionado[i] = 0
+                    self.indice_selecionado[i] = 0
+
         
     #Apaga as figuras selecionadas
     def apagar(self, event):
@@ -303,7 +310,7 @@ class Circulos(FigurA):
         self.cordefora = cordeoutline[1]
         self.cordedentro = cordeprenchimento[1]
         self.selecionado = False
- 
+        self.raio = ((self.coord[2] - self.coord[0])**2 + (self.coord[3]- self.coord[1])**2)**0.5
     def atualizar_figura_nova(self, event):
         self.coord[2] = event.x
         self.coord[3] = event.y
