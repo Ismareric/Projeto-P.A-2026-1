@@ -25,9 +25,9 @@ class Figuras:
 
     #Desseleciona as figuras quando clica em uma área vazia
     def removerselecionados(self):
-        for i in self.figuras:
-                        i.selecionado=False
-
+        for i in self.indice_selecionado:
+                        self.figuras[i].selecionado=False
+        self.indice_selecionado=[]
     #Procura(de cima para baixo) a figura que contem o ponto clicado no modo de seleção
     def procurar_figura(self,event,ctrl):
 
@@ -37,22 +37,21 @@ class Figuras:
             if self.figuras[index].verificar_ponto(event):
                 if index in self.indice_selecionado:
                     
-                    return
+                    return 1
                 
                 if not ctrl:
                     self.removerselecionados()
-                    self.indice_selecionado = [index]
+                    self.indice_selecionado.append(index)
                 else:
                     self.indice_selecionado.append(index)
                 
                 self.figuras[index].selecionado = True
-                return 
+                return 1
+          
+            elif not ctrl:
+                self.removerselecionados()
+                self.indice_selecionado = []
             index -= 1
-            
-        if not ctrl:
-            self.removerselecionados()
-            self.indice_selecionado = []
-
 
     def procurar_figuras(self, coord):
         for i in range(len(self.figuras)):
@@ -133,15 +132,29 @@ class Figuras:
         self.figuras.extend(objetoscolados) #Adiciona os objs colados à lista de figuras
     
     #Muda cor das selecionadas
+    # Modifica a posição das figuras, selecionadas(Exeto Rabisco e Poligono)
+    def modificarposicao(self, dx, dy):
+        self.coord = [
+        self.coord[0] + dx, 
+        self.coord[1] + dy, 
+        self.coord[2] + dx, 
+        self.coord[3] + dy
+        ]   
     def alterar_cor_de_dentro(self, cor):
         if  self.indice_selecionado !=[]: #Verifica se há seleccionanda
             for i in self.indice_selecionado: #Navega pelos selecionados
-                self.figuras[i].cordedentro = cor[1] #Muda a cor
+                if isinstance(self.figuras[i],Composta):
+                    self.figuras[i].mudarcordedentrodosagregados(cor[1])
+                else:
+                    self.figuras[i].cordedentro = cor[1] #Muda a cor
     #Muda cor das selecionadas
     def alterar_cor_de_fora(self, cor):
         if  self.indice_selecionado !=[]: #Verifica se há seleccionanda
             for i in self.indice_selecionado: #Navega pelos selecionados
-                self.figuras[i].cordefora = cor[1] #Muda a cor
+                if isinstance(self.figuras[i],Composta):
+                    self.figuras[i].mudarcordeforadosagregados(cor[1])
+                else:
+                    self.figuras[i].cordefora = cor[1] #Muda a cor
 
 #Classe abstrata para os métodos de cada figura
 class FigurA(ABC):
@@ -154,6 +167,14 @@ class FigurA(ABC):
     def desenhar(self, canva):
         """Desenha a figura"""
         pass
+    # Modifica a posição das figuras, selecionadas(Exeto Rabisco e Poligono)
+    def modificarposicao(self, dx, dy):
+        self.coord = [
+        self.coord[0] + dx, 
+        self.coord[1] + dy, 
+        self.coord[2] + dx, 
+        self.coord[3] + dy
+        ]   
 
     @abstractmethod
     def desenhar_incompleto(self, canva):
@@ -164,9 +185,15 @@ class FigurA(ABC):
     def verificar_ponto(self, event):
         """Verifica se um ponto está contido na figura"""
         pass
-    @abstractmethod
     def procurar_figuras_multiplas(self,coorddoretangulo):
-        pass
+        if ((coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3])
+            or(coorddoretangulo[0]>=self.coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[1]>=coorddoretangulo[3])and(coorddoretangulo[0]>=self.coord[2]>=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[3]>=coorddoretangulo[3])
+            or(coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[1]>=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[3]>=coorddoretangulo[3])
+            or(coorddoretangulo[0]>=self.coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]>=self.coord[2]>=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3])):
+            return True
+        else:
+            return False
+
     # Modifica a posição das figuras, selecionadas(Exeto Rabisco e Poligono)
     def modificarposicao(self, dx, dy):
         self.coord = [
@@ -232,14 +259,6 @@ class Linha(FigurA):
             return True
         else :
             return False
-    def procurar_figuras_multiplas(self,coorddoretangulo):
-        if ((coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3])
-            or(coorddoretangulo[0]>=self.coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[1]>=coorddoretangulo[3])and(coorddoretangulo[0]>=self.coord[2]>=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[3]>=coorddoretangulo[3])
-            or(coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[1]>=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]>=self.coord[3]>=coorddoretangulo[3])
-            or(coorddoretangulo[0]>=self.coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]>=self.coord[2]>=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3])):
-            return True
-        else:
-            return False
 
 class Rabisco(FigurA):
     #Cria o rabisco
@@ -273,8 +292,10 @@ class Rabisco(FigurA):
             i[0] += dx
             i[1] += dy
     def procurar_figuras_multiplas(self,coorddoretangulo):
-        pass
-    
+        for coord in self.coord:
+            if not ((coorddoretangulo[0]<=coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=coord[1]<=coorddoretangulo[3])or(coorddoretangulo[0]>=coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]>=coord[1]>=coorddoretangulo[3])or(coorddoretangulo[0]>=coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]<=coord[1]<=coorddoretangulo[3])or(coorddoretangulo[0]<=coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]>=coord[1]>=coorddoretangulo[3])):
+                return False
+        return True
 class Circulos(FigurA):
     #Cria o circulo
     def __init__(self, event, cordeoutline, cordeprenchimento):
@@ -299,11 +320,6 @@ class Circulos(FigurA):
         if (px - x1)**2 + (py - y1)**2 <= self.raio**2:
             return True
         else :
-            return False
-    def procurar_figuras_multiplas(self,coorddoretangulo):
-        if (coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3]):
-            return True
-        else:
             return False
           
 class Retangulo(FigurA):
@@ -331,11 +347,6 @@ class Retangulo(FigurA):
             return True
 
         else :
-            return False
-    def procurar_figuras_multiplas(self,coorddoretangulo):
-        if (coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3]):
-            return True
-        else:
             return False
 
 class Oval(FigurA):
@@ -365,11 +376,6 @@ class Oval(FigurA):
         if (((px - h)**2)/a**2) + (((py - k)**2)/b**2) <= 1  :
             return True
         else: 
-            return False
-    def procurar_figuras_multiplas(self,coorddoretangulo):
-        if (coorddoretangulo[0]<=self.coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[1]<=coorddoretangulo[3])and(coorddoretangulo[0]<=self.coord[2]<=coorddoretangulo[2] and coorddoretangulo[1]<=self.coord[3]<=coorddoretangulo[3]):
-            return True
-        else:
             return False
 
 class Poligonos(FigurA):
@@ -425,7 +431,10 @@ class Poligonos(FigurA):
             i[0] += dx
             i[1] += dy
     def procurar_figuras_multiplas(self,coorddoretangulo):
-        pass
+        for coord in self.coord:
+            if not ((coorddoretangulo[0]<=coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]<=coord[1]<=coorddoretangulo[3])or(coorddoretangulo[0]>=coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]>=coord[1]>=coorddoretangulo[3])or(coorddoretangulo[0]>=coord[0]>=coorddoretangulo[2] and coorddoretangulo[1]<=coord[1]<=coorddoretangulo[3])or(coorddoretangulo[0]<=coord[0]<=coorddoretangulo[2] and coorddoretangulo[1]>=coord[1]>=coorddoretangulo[3])):
+                return False
+        return True
 class Composta(FigurA):
     def __init__(self,figurasagrupadas):
         self.figurasagrupadas=figurasagrupadas
@@ -437,19 +446,35 @@ class Composta(FigurA):
         return super().atualizar_figura_nova(event)
     def desenhar(self, canva):
         for i in self.figurasagrupadas:
-            i.desenhar(canva)
+                i.desenhar(canva)
     def desenhar_incompleto(self, canva):
-        return super().desenhar_incompleto(canva)
+        for i in self.figurasagrupadas:
+            i.desenhar_incompleto(canva)
     def verificar_ponto(self, event):
         for i in self.figurasagrupadas:
-            if i.verificar_ponto:
+            if i.verificar_ponto(event):
                 return True
         return False
     def modificarposicao(self, dx, dy):
-        pass
+        for i in self.figurasagrupadas:
+            i.modificarposicao(dx,dy)
     def procurar_figuras_multiplas(self, coorddoretangulo):
-        return super().procurar_figuras_multiplas(coorddoretangulo)
-    
+        for i in self.figurasagrupadas:
+            if not i.procurar_figuras_multiplas(coorddoretangulo):
+                return False
+        return True
+    def mudarcordedentrodosagregados(self,cordedentro):
+        for i in self.figurasagrupadas:
+            if isinstance(i,Composta):
+                i.mudarcordedentrodosagregados(cordedentro)
+            else:
+                i.cordedentro=cordedentro
+    def mudarcordeforadosagregados(self,cordefora):
+        for i in self.figurasagrupadas:
+            if isinstance(i,Composta):
+                i.mudarcordeforadosagregados(cordefora)
+            else:
+                i.cordefora=cordefora
 #Classe para criar o retangulo de seleçaõ (Incompleta)
 class Selecao(FigurA):
     def __init__(self, event):
